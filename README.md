@@ -49,75 +49,55 @@ REST API:
 
 1. Животные (Animals):
 - GET /api/animals - Получить список всех животных.
-  - Ответ: `[{ "id": 1, "name": "Барсик", "species": "Кошка", "breed": "Сиамская", "owner_id": 1 }, ...]`
   
 - GET /api/animals/{id} - Получить информацию о конкретном животном.
-  - Ответ: `{ "id": 1, "name": "Барсик", "species": "Кошка", "breed": "Сиамская", "owner_id": 1 }`
 
 - POST /api/animals - Добавить новое животное.
   - Запрос: `{ "name": "Барсик", "species": "Кошка", "breed": "Сиамская", "owner_id": 1 }`
-  - Ответ: `{ "id": 1, "name": "Барсик", "species": "Кошка", "breed": "Сиамская", "owner_id": 1 }`
 
 - PUT /api/animals/{id} - Обновить информацию о животном.
   - Запрос: `{ "name": "Барсик", "species": "Кошка", "breed": "Сиамская", "owner_id": 1 }`
-  - Ответ: `{ "id": 1, "name": "Барсик", "species": "Кошка", "breed": "Сиамская", "owner_id": 1 }`
 
 - DELETE /api/animals/{id} - Удалить животное.
-  - Ответ: `{ "message": "Животное удалено" }`
 
 2. Владельцы (Owners):
 - GET /api/owners - Получить список всех владельцев.
-  - Ответ: `[{ "id": 1, "name": "Иван Иванов", "phone": "+71234567890", "email": "ivan@example.com" }, ...]`
 
 - GET /api/owners/{id} - Получить информацию о конкретном владельце.
-  - Ответ: `{ "id": 1, "name": "Иван Иванов", "phone": "+71234567890", "email": "ivan@example.com" }`
 
 - POST /api/owners - Добавить нового владельца.
   - Запрос: `{ "name": "Иван Иванов", "phone": "+71234567890", "email": "ivan@example.com" }`
-  - Ответ: `{ "id": 1, "name": "Иван Иванов", "phone": "+71234567890", "email": "ivan@example.com" }`
 
 - PUT /api/owners/{id} - Обновить информацию о владельце.
   - Запрос: `{ "name": "Иван Иванов", "phone": "+71234567890", "email": "ivan@example.com" }`
-  - Ответ: `{ "id": 1, "name": "Иван Иванов", "phone": "+71234567890", "email": "ivan@example.com" }`
 
 - DELETE /api/owners/{id} - Удалить владельца.
-  - Ответ: `{ "message": "Владелец удален" }`
 
 3. Записи на прием (Appointments):
 - GET /api/appointments - Получить список всех записей.
-  - Ответ: `[{ "id": 1, "animal_id": 1, "vet_id": 1, "date": "2025-01-10T10:00:00Z", "description": "Плановый осмотр" }, ...]`
 
 - GET /api/appointments/{id} - Получить информацию о конкретной записи.
-  - Ответ: `{ "id": 1, "animal_id": 1, "vet_id": 1, "date": "2025-01-10T10:00:00Z", "description": "Плановый осмотр" }`
 
 - POST /api/appointments - Добавить новую запись.
   - Запрос: `{ "animal_id": 1, "vet_id": 1, "date": "2025-01-10T10:00:00Z", "description": "Плановый осмотр" }`
-  - Ответ: `{ "id": 1, "animal_id": 1, "vet_id": 1, "date": "2025-01-10T10:00:00Z", "description": "Плановый осмотр" }`
 
 - PUT /api/appointments/{id} - Обновить информацию о записи.
   - Запрос: `{ "animal_id": 1, "vet_id": 1, "date": "2025-01-10T10:00:00Z", "description": "Плановый осмотр" }`
-  - Ответ: `{ "id": 1, "animal_id": 1, "vet_id": 1, "date": "2025-01-10T10:00:00Z", "description": "Плановый осмотр" }`
 
 - DELETE /api/appointments/{id} - Удалить запись.
-  - Ответ: `{ "message": "Запись удалена" }`
 
 4. Ветеринары (Vets):
 - GET /api/vets - Получить список всех ветеринаров.
-  - Ответ: `[{ "id": 1, "name": "Доктор Ватсон", "specialization": "Хирург" }, ...]`
 
 - GET /api/vets/{id} - Получить информацию о конкретном ветеринаре.
-  - Ответ: `{ "id": 1, "name": "Доктор Ватсон", "specialization": "Хирург" }`
 
 - POST /api/vets - Добавить нового ветеринара.
   - Запрос: `{ "name": "Доктор Ватсон", "specialization": "Хирург" }`
-  - Ответ: `{ "id": 1, "name": "Доктор Ватсон", "specialization": "Хирург" }`
 
 - PUT /api/vets/{id} - Обновить информацию о ветеринаре.
   - Запрос: `{ "name": "Доктор Ватсон", "specialization": "Хирург" }`
-  - Ответ: `{ "id": 1, "name": "Доктор Ватсон", "specialization": "Хирург" }`
 
 - DELETE /api/vets/{id} - Удалить ветеринара.
-  - Ответ: `{ "message": "Ветеринар удален" }`
 
 # 4. Стек технологий
 
