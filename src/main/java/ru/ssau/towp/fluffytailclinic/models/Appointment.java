@@ -10,8 +10,6 @@ import java.util.List;
 @Table(name = "appointments")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +23,14 @@ public class Appointment {
     @JoinColumn(name = "vet_id", nullable = false)
     private User vet;
 
+    @Column(name="date")
     private LocalDateTime date;
+    @Column(name="description")
     private String description;
 
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL)
     private List<DiagnosisAppointment> diagnosisAppointments;
+
+    public Appointment(){}
 }
 

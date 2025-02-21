@@ -9,17 +9,19 @@ import java.util.List;
 @Table(name = "diagnoses")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Diagnosis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="diagnosis_id")
     private Long id;
-
+    @Column(name="name")
     private String name;
+    @Column(name="description")
     private String description;
 
     @OneToMany(mappedBy = "diagnosis", cascade = CascadeType.ALL)
     private List<DiagnosisAppointment> diagnosisAppointments;
+
+    public Diagnosis() {}
 }
 

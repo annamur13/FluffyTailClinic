@@ -7,11 +7,10 @@ import lombok.*;
 @Table(name = "diagnosis_appointment")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class DiagnosisAppointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="diagApp_id")
     private Long id;
 
     @ManyToOne
@@ -21,4 +20,6 @@ public class DiagnosisAppointment {
     @ManyToOne
     @JoinColumn(name = "diagnosis_id", nullable = false)
     private Diagnosis diagnosis;
+
+    public DiagnosisAppointment() {}
 }

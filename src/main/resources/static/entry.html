@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Entry Page</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header>
+    <h1>Entry Page for FluffyClinic)</h1>
+    <nav>
+        <a th:href="@{/}">Home</a> |
+        <a th:href="@{/entry}">Entry</a> |
+        <a th:href="@{/dashboard}">Dashboard</a>
+    </nav>
+</header>
+
+<main>
+    <h2>Welcome to the Entry Page</h2>
+    <form th:action="@{/entry}" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Submit</button>
+    </form>
+</main>
+
+<footer>
+    <p>&copy; 2025 FluffyClinicDevTeam</p>
+</footer>
+</body>
+</html>
