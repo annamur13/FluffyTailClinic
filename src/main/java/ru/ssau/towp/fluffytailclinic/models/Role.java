@@ -24,5 +24,12 @@ public class Role implements GrantedAuthority {
     }
 
     public Role() {}
+
+    public Object getName() {
+        return null;
+    }
+
+    public void setName(Object name) {
+    }
 }
 

@@ -22,5 +22,26 @@ public class Animal {
     private User owner;
 
     public Animal(){}
+
+    public Object getName() {
+        return null;
+    }
+
+    public Object getType() {
+        return null;
+    }
+
+    public Object getOwner() {
+        return null;
+    }
+
+    public void setOwner(Object owner) {
+    }
+
+    public void setType(Object type) {
+    }
+
+    public void setName(Object name) {
+    }
 }
 

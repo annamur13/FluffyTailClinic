@@ -23,5 +23,19 @@ public class Diagnosis {
     private List<DiagnosisAppointment> diagnosisAppointments;
 
     public Diagnosis() {}
+
+    public Object getDescription() {
+        return null;
+    }
+
+    public void setDescription(Object description) {
+    }
+
+    public Object getName() {
+        return null;
+    }
+
+    public void setName(Object name) {
+    }
 }
 

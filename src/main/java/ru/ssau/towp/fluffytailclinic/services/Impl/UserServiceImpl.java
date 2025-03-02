@@ -9,7 +9,7 @@ import ru.ssau.towp.fluffytailclinic.services.UserService;
 
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends UserService {
     @Autowired
     private UserRepository userRepository;
 

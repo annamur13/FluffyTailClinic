@@ -22,4 +22,18 @@ public class DiagnosisAppointment {
     private Diagnosis diagnosis;
 
     public DiagnosisAppointment() {}
+
+    public Object getAppointment() {
+        return null;
+    }
+
+    public void setAppointment(Object appointment) {
+    }
+
+    public Object getDiagnosis() {
+        return null;
+    }
+
+    public void setDiagnosis(Object diagnosis) {
+    }
 }
