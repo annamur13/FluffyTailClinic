@@ -24,15 +24,15 @@ public class Animal {
     public Animal(){}
 
     public Object getName() {
-        return null;
+        return this.name;
     }
 
     public Object getType() {
-        return null;
+        return this.type;
     }
 
-    public Object getOwner() {
-        return null;
+    public User getOwner() {
+        return this.owner;
     }
 
     public void setOwner(Object owner) {

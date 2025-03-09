@@ -36,17 +36,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // Отключаем CSRF (если не используешь API)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Используем сессии
+                .csrf(csrf -> csrf.disable()) // Отключаем CSRF для тестирования API
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/entry", "/css/**", "/images/**", "/js/**", "/main.html", "/registration.html", "/entry.html",
-                                "/", "/registration/addUser", "/registration").permitAll() // Доступ без авторизации
-                        .anyRequest().authenticated() // Все остальные маршруты требуют авторизации
+                        .requestMatchers("/entry").anonymous()
+                        .requestMatchers( "/registration", "/css/**", "/js/**", "/images/**","entry.html","registration.html").permitAll() // Разрешаем доступ
+                        .requestMatchers("/api/**").permitAll() // Открываем API для тестирования
+                        .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .formLogin(form -> form
-                        .loginPage("/entry") // Форма входа
-                        .defaultSuccessUrl("/education", true) // После успешного входа -> /education
+                        .loginPage("/entry") // Указываем страницу входа
                         .permitAll()
+                        .defaultSuccessUrl("/dashboard")
                         .successHandler((request, response, authentication) -> {
                             response.setStatus(HttpServletResponse.SC_OK);
                         })
@@ -54,12 +54,9 @@ public class SecurityConfig {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         })
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/entry") // После выхода -> /entry
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
+                .logout((logout) -> logout.permitAll())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // Открываем сессию для каждого запроса
                 )
                 .build();
     }

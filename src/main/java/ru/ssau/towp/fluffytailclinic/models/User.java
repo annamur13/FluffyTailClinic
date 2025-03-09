@@ -41,10 +41,11 @@ public class User {
     public User(){}
 
     public Object getName() {
-        return null;
+        return name;
     }
 
     public void setName(Object name) {
+        this.name = (String) name;
     }
 
     public String getPassword() {
@@ -52,34 +53,39 @@ public class User {
     }
 
     public void setPassword(Object password) {
+        this.password = (String) password;
     }
 
     public Object getPhone() {
-        return null;
+        return phone;
     }
 
     public void setPhone(Object phone) {
+        this.phone = (Long) phone;
     }
 
     public String getEmail() {
-        return null;
+        return email;
     }
 
     public void setEmail(Object email) {
+        this.email = (String) email;
     }
 
     public Object getDescription() {
-        return null;
+        return description;
     }
 
     public void setDescription(Object description) {
+        this.description = (String) description;
     }
 
-    public Object getRole() {
-        return null;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRole(Object role) {
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
 
