@@ -7,6 +7,7 @@ import lombok.*;
 @Table(name = "animals")
 @Getter
 @Setter
+
 public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,25 +24,7 @@ public class Animal {
 
     public Animal(){}
 
-    public Object getName() {
-        return null;
-    }
-
-    public Object getType() {
-        return null;
-    }
-
-    public Object getOwner() {
-        return null;
-    }
-
-    public void setOwner(Object owner) {
-    }
-
-    public void setType(Object type) {
-    }
-
-    public void setName(Object name) {
+    public Animal(long l, String user1, String mail, int i) {
     }
 }
 

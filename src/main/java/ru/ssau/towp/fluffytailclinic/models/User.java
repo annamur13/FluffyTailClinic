@@ -23,7 +23,7 @@ public class User {
     private String password;
 
     @Column(name="user_phone")
-    private Long phone;
+    private String phone;
 
     @Column(name="user_email")
     private String email;
@@ -40,46 +40,5 @@ public class User {
 
     public User(){}
 
-    public Object getName() {
-        return null;
-    }
-
-    public void setName(Object name) {
-    }
-
-    public String getPassword() {
-        return null;
-    }
-
-    public void setPassword(Object password) {
-    }
-
-    public Object getPhone() {
-        return null;
-    }
-
-    public void setPhone(Object phone) {
-    }
-
-    public String getEmail() {
-        return null;
-    }
-
-    public void setEmail(Object email) {
-    }
-
-    public Object getDescription() {
-        return null;
-    }
-
-    public void setDescription(Object description) {
-    }
-
-    public Object getRole() {
-        return null;
-    }
-
-    public void setRole(Object role) {
-    }
 }
 

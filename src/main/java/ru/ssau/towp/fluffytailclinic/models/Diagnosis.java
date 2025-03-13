@@ -24,18 +24,9 @@ public class Diagnosis {
 
     public Diagnosis() {}
 
-    public Object getDescription() {
-        return null;
-    }
-
-    public void setDescription(Object description) {
-    }
-
-    public Object getName() {
-        return null;
-    }
-
-    public void setName(Object name) {
+    public Diagnosis(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 }
 

@@ -43,6 +43,17 @@ dependencies {
 
 	// Тестирование
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	//testImplementation group: 'org.junit.platform', name: 'junit-platform-suite-api', version: '1.12.0'
+
+	testImplementation(platform('org.junit:junit-bom:5.12.0'))
+	testImplementation('org.junit.jupiter:junit-jupiter')
+	// https://mvnrepository.com/artifact/org.mockito/mockito-core
+	testImplementation 'org.mockito:mockito-core:5.16.0'
+	// https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
+	testImplementation 'org.mockito:mockito-junit-jupiter:5.16.0'
+
+	testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+	//testImplementation "org.testcontainers:postgresql:1.24.0"
 }
 
 tasks.named('test') {

@@ -33,32 +33,5 @@ public class Appointment {
 
     public Appointment(){}
 
-    public Object getDescription() {
-        return null;
-    }
-
-    public void setDescription(Object description) {
-    }
-
-    public Object getDate() {
-        return null;
-    }
-
-    public void setDate(Object date) {
-    }
-
-    public Object getVet() {
-        return null;
-    }
-
-    public void setVet(Object vet) {
-    }
-
-    public Object getAnimal() {
-        return null;
-    }
-
-    public void setAnimal(Object animal) {
-    }
 }
 
