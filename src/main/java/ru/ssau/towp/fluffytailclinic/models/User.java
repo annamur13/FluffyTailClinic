@@ -1,5 +1,7 @@
 package ru.ssau.towp.fluffytailclinic.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,7 +42,7 @@ public class User {
 
     public User(){}
 
-    public Object getName() {
+    public String getName() {
         return name;
     }
 

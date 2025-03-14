@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ssau.towp.fluffytailclinic.dto.request.AnimalDTO;
 import ru.ssau.towp.fluffytailclinic.models.Animal;
 import ru.ssau.towp.fluffytailclinic.models.User;
 import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
@@ -12,6 +13,7 @@ import ru.ssau.towp.fluffytailclinic.services.AnimalService;
 import ru.ssau.towp.fluffytailclinic.services.UserService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/animals")
@@ -28,23 +30,30 @@ public class AnimalController {
 
     // 🔹 Получение всех животных
     @GetMapping
-    public List<Animal> getAllAnimals() {
-        return animalRepository.findAll();
+    public List<AnimalDTO> getAllAnimals() {
+        return animalRepository.findAll().stream()
+                .map(AnimalDTO::new)
+                .collect(Collectors.toList());
     }
 
     // 🔹 Получение животного по ID
     @GetMapping("/{id}")
-    public ResponseEntity<Animal> getAnimalById(@PathVariable Long id) {
-        return animalRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<AnimalDTO> getAnimalById(@PathVariable Long id) {
+        Animal animal = animalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Животное не найдено"));
+        return ResponseEntity.ok(new AnimalDTO(animal));
     }
 
     // 🔹 Создание нового животного
     @PostMapping
     public ResponseEntity<Animal> createAnimal(@RequestBody Animal animal) {
+        System.out.println("Полученные данные: " + animal);
+
+        if (animal == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         if (animal.getOwner() == null || animal.getOwner().getId() == null) {
-            System.out.println("Errorrrr");
             return ResponseEntity.badRequest().build();
         }
 

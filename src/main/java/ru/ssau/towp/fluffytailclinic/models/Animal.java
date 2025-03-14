@@ -1,12 +1,12 @@
 package ru.ssau.towp.fluffytailclinic.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "animals")
-@Getter
-@Setter
+@AllArgsConstructor
 public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,25 +23,15 @@ public class Animal {
 
     public Animal(){}
 
-    public Object getName() {
-        return this.name;
-    }
+    public Long getId() { return id; }
 
-    public Object getType() {
-        return this.type;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public User getOwner() {
-        return this.owner;
-    }
+    public String getType() { return type; }
+    public void setType(String species) { this.type = species; }
 
-    public void setOwner(Object owner) {
-    }
-
-    public void setType(Object type) {
-    }
-
-    public void setName(Object name) {
-    }
+    public User getOwner() { return owner; }
+    public void setOwner(User owner) { this.owner = owner; }
 }
 

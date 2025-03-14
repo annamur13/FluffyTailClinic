@@ -1,12 +1,17 @@
 package ru.ssau.towp.fluffytailclinic.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ssau.towp.fluffytailclinic.dto.request.UserDTO;
 import ru.ssau.towp.fluffytailclinic.models.User;
+import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
+import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
 import ru.ssau.towp.fluffytailclinic.services.UserService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -14,18 +19,31 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    private final AnimalRepository animalRepository;
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserController(AnimalRepository animalRepository, UserRepository userRepository) {
+        this.animalRepository = animalRepository;
+        this.userRepository = userRepository;
+    }
 
     // Получить всех пользователей
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userRepository.findAll()
+                .stream()
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(users);
     }
 
     // Получить пользователя по ID
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+        return ResponseEntity.ok(new UserDTO(user));
     }
 
     // Получить пользователя по email
