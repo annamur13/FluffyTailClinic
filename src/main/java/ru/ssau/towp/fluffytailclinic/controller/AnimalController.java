@@ -93,4 +93,6 @@ public class AnimalController {
         animalRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

@@ -9,7 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-
 public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +25,10 @@ public class Animal {
 
     public Animal(){}
 
- }
+    public Animal(Long id, String name, String type) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+    }
+}
 

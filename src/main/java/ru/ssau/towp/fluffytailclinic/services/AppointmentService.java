@@ -46,4 +46,14 @@ public class AppointmentService {
     public void deleteAppointment(Long id) {
         appointmentRepository.deleteById(id);
     }
+
+    // Получить все записи (альтернативное название метода)
+    public List<Appointment> findAllAppointments() {
+        return appointmentRepository.findAll();
+    }
+
+    // Получить запись по ID (альтернативное название метода)
+    public Optional<Appointment> findAppointmentById(Long appointmentId) {
+        return appointmentRepository.findById(appointmentId);
+    }
 }

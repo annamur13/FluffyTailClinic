@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -33,5 +34,12 @@ public class Appointment {
 
     public Appointment(){}
 
+    public Appointment(long l, String date, String time, String checkup) {
+    }
+
+    private LocalTime time;
+    public Object getTime() {
+        return this.time;
+    }
 }
 

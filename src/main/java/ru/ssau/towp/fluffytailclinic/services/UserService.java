@@ -1,5 +1,6 @@
 package ru.ssau.towp.fluffytailclinic.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ssau.towp.fluffytailclinic.models.User;
@@ -9,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public abstract class UserService {
+@Transactional
+public class UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -27,6 +29,16 @@ public abstract class UserService {
     // Получить пользователя по email
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    // Получить пользователя по имени
+    public Optional<User> getUserByName(String userName) {
+        return userRepository.findByName(userName);
+    }
+
+    // Получить пользователя по номеру телефона
+    public Optional<User> getUserByPhone(String userPhone) {
+        return userRepository.findByPhone(userPhone);
     }
 
     // Создать нового пользователя
@@ -54,7 +66,18 @@ public abstract class UserService {
         userRepository.deleteById(id);
     }
 
-    public abstract boolean addUser(User user);
+    // Добавить пользователя (альтернативное название метода)
+    public boolean addUser(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return false; // Пользователь с таким email уже существует
+        }
+        userRepository.save(user);
+        return true;
+    }
 
-    public abstract String encryptPassword(String password);
+    // Шифрование пароля (заглушка, можно реализовать с использованием BCrypt)
+    public String encryptPassword(String password) {
+        // Пример простого шифрования (в реальном проекте используйте BCryptPasswordEncoder)
+        return new StringBuilder(password).reverse().toString();
+    }
 }

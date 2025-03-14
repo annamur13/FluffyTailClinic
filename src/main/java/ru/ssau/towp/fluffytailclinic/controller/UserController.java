@@ -1,13 +1,12 @@
 package ru.ssau.towp.fluffytailclinic.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.towp.fluffytailclinic.controller.NF.ResourceNotFoundException;
 import ru.ssau.towp.fluffytailclinic.dto.UserDTO;
 import ru.ssau.towp.fluffytailclinic.models.User;
-import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
-import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
+import ru.ssau.towp.fluffytailclinic.services.AnimalService;
 import ru.ssau.towp.fluffytailclinic.services.UserService;
 
 import java.util.List;
@@ -16,35 +15,26 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
+@Slf4j
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-    private final AnimalRepository animalRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    @Autowired
-    public UserController(AnimalRepository animalRepository, UserRepository userRepository) {
-        this.animalRepository = animalRepository;
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     // Получить всех пользователей
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userRepository.findAll()
-                .stream()
-                .map(UserDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(users);
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     // Получить пользователя по ID
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Пользователь с ID " + id + " не найден"));
-        return ResponseEntity.ok(new UserDTO(user));
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     // Получить пользователя по email

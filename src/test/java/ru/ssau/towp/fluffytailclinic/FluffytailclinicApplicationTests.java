@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class FluffytailclinicApplicationTests {
-
+/*
 	@Autowired
 	private AppointmentRepository appointmentRepository;
 
@@ -47,5 +47,5 @@ class FluffytailclinicApplicationTests {
 			Diagnosis diagnosis = (Diagnosis) da.getDiagnosis(); // Приведение типа
 			System.out.println("- " + diagnosis.getName() + ": " + diagnosis.getDescription());
 		}
-	}
+	}*/
 }

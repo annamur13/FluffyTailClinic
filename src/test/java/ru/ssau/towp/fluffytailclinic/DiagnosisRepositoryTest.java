@@ -16,13 +16,13 @@ import ru.ssau.towp.fluffytailclinic.repository.DiagnosisRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@TestPropertySource(properties = {
-        "spring.datasource.url=jdbc:postgresql://localhost:5432/clinic_test",
-        "spring.jpa.hibernate.ddl-auto=create-drop",
-        "spring.datasource.username=postgres",
-        "spring.datasource.password=postgres"
-})
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+//@TestPropertySource(properties = {
+//        "spring.datasource.url=jdbc:postgresql://localhost:5432/clinic_test",
+//        "spring.jpa.hibernate.ddl-auto=create-drop",
+//        "spring.datasource.username=postgres",
+//        "spring.datasource.password=postgres"
+//})
+//@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DiagnosisRepositoryTest {
 
     @Autowired
@@ -74,10 +74,5 @@ public class DiagnosisRepositoryTest {
 
         diagnosisRepository.delete(diagnosis);
 
-        //studentRepository.deleteAll();
-        //courseRepository.deleteAll();
-
-        //for (Course cours : courses) {
-        //}
     }
 }

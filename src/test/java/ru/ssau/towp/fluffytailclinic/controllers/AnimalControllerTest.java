@@ -3,14 +3,19 @@ package ru.ssau.towp.fluffytailclinic.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.ssau.towp.fluffytailclinic.controller.AnimalController;
 import ru.ssau.towp.fluffytailclinic.models.Animal;
 import ru.ssau.towp.fluffytailclinic.services.AnimalService;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -19,52 +24,67 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = AnimalController.class)
 
+@ExtendWith(MockitoExtension.class) // Подключаем Mockito
 public class AnimalControllerTest {
-    @Autowired
     private MockMvc mockMvc;
-    @MockitoBean
-    private AnimalService studentServices;
-    @Autowired
-    private ObjectMapper objectMapper;
-    private Object animalList;
+
+    @Mock
+    private AnimalService animalService; // Создаём мок-сервис
+
+    @InjectMocks
+    private AnimalController animalController; // Внедряем мок в контроллер
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private List<Animal> animalList;
 
     @BeforeEach
     void setUp() {
+        // Настраиваем MockMvc
+        mockMvc = MockMvcBuilders.standaloneSetup(animalController).build();
 
-        animalList.add(new Animal(1L, "user1", "user1@gmail.com", 20));
-        animalList.add(new Animal(2L, "user2", "user2@gmail.com", 21));
-        animalList.add(new Animal(3L, "user3", "user3@gmail.com", 22));
+        // Инициализируем тестовые данные
+        Animal animal1 = new Animal(1L, "Buddy", "Dog");
+        Animal animal2 = new Animal(2L, "Whiskers", "Cat");
+        Animal animal3 = new Animal(3L, "Rex", "Dog");
 
-        //objectMapper.registerModule(new ProblemM);
-        //objectMapper.registerModule(new ConstraintViolationProblemModule());
+        animalList = Arrays.asList(animal1, animal2, animal3);
     }
 
     @Test
-    void shouldFetchAllUsers() throws Exception {
-        given(studentServices.findAllnimals()).willReturn(this.animalList);
+    void shouldFetchAllAnimals() throws Exception {
+        // Мокируем вызов сервиса
+        given(animalService.getAllAnimals()).willReturn(animalList);
 
-        this.mockMvc.perform(get("/api/animals"))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        this.mockMvc.perform(get("/api/animals"))
+        // Выполняем запрос и проверяем результат
+        mockMvc.perform(get("/api/animals"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(animalList.size())));
-
     }
 
     @Test
-    void shouldFindStudentById() throws Exception {
+    void shouldFindAnimalById() throws Exception {
         Long animalId = 1L;
-        Animal animal = new Animal(1L, "user1", "user1@gmail.com", 20);
-        given(AnimalService.findByAnimalId(animalId)).willReturn(Optional.of(animal));
+        Animal animal = new Animal(animalId, "Buddy", "Dog");
 
-        this.mockMvc.perform(get("/api/students/{id}", animalId))
+        // Мокируем вызов сервиса
+        given(animalService.getAnimalById(animalId)).willReturn(Optional.of(animal));
+
+        // Выполняем запрос и проверяем результат
+        mockMvc.perform(get("/api/animals/{id}", animalId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value(animal.getName()))
-                .andExpect(jsonPath("$.age").value(animal.getType()))
-                .andExpect(jsonPath("$.name").value(animal.getName()));
+                .andExpect(jsonPath("$.name").value(animal.getName()))
+                .andExpect(jsonPath("$.type").value(animal.getType()));
+
+    }
+    @Test
+    void shouldReturnNotFoundIfAnimalDoesNotExist() throws Exception {
+        Long animalId = 99L;
+
+        given(animalService.getAnimalById(animalId)).willReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/animals/{id}", animalId))
+                .andExpect(status().isNotFound());
     }
 }

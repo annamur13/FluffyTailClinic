@@ -44,4 +44,19 @@ public class DiagnosisService {
     public void deleteDiagnosis(Long id) {
         diagnosisRepository.deleteById(id);
     }
+
+    // Получить все диагнозы (альтернативное название метода)
+    public List<Diagnosis> findAllDiagnoses() {
+        return diagnosisRepository.findAll();
+    }
+
+    // Получить диагноз по ID (альтернативное название метода)
+    public Optional<Diagnosis> findDiagnosisById(Long diagnosisId) {
+        return diagnosisRepository.findById(diagnosisId);
+    }
+
+    // Получить диагноз по имени
+    public Optional<Diagnosis> findDiagnosisByName(String diagnosisName) {
+        return diagnosisRepository.findByName(diagnosisName);
+    }
 }
