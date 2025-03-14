@@ -1,10 +1,12 @@
 package ru.ssau.towp.fluffytailclinic.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "animals")
+@AllArgsConstructor
 @Getter
 @Setter
 
@@ -24,7 +26,5 @@ public class Animal {
 
     public Animal(){}
 
-    public Animal(long l, String user1, String mail, int i) {
-    }
-}
+ }
 

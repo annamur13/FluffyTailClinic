@@ -2,30 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Entry Page</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Вход</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<header>
-    <h1>Entry Page for FluffyClinic)</h1>
-    <nav>
-        <a th:href="@{/}">Home</a> |
-        <a th:href="@{/entry}">Entry</a> |
-        <a th:href="@{/dashboard}">Dashboard</a>
-    </nav>
-</header>
+<h2>Вход в систему</h2>
 
-<main>
-    <h2>Welcome to the Entry Page</h2>
-    <form th:action="@{/entry}" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <button type="submit">Submit</button>
-    </form>
-</main>
+<form th:action="@{/login}" method="post">
+    <label for="username">Имя пользователя:</label>
+    <input type="text" id="username" name="username" required>
 
-<footer>
-    <p>&copy; 2025 FluffyClinicDevTeam</p>
-</footer>
+    <label for="password">Пароль:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Войти</button>
+</form>
+
+<p>Нет аккаунта? <a href="/registration">Зарегистрироваться</a></p>
 </body>
 </html>

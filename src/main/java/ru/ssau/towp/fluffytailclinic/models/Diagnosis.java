@@ -19,7 +19,7 @@ public class Diagnosis {
     @Column(name="description")
     private String description;
 
-    @OneToMany(mappedBy = "diagnosis", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "diagnosis", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DiagnosisAppointment> diagnosisAppointments;
 
     public Diagnosis() {}
