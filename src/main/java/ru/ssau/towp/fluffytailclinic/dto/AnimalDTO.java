@@ -1,6 +1,5 @@
-package ru.ssau.towp.fluffytailclinic.dto.request;
+package ru.ssau.towp.fluffytailclinic.dto;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Data;
 import ru.ssau.towp.fluffytailclinic.models.Animal;
 

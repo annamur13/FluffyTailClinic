@@ -1,6 +1,8 @@
 package ru.ssau.towp.fluffytailclinic.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.towp.fluffytailclinic.models.DiagnosisAppointment;
 import ru.ssau.towp.fluffytailclinic.services.DiagnosisAppointmentService;
@@ -16,32 +18,41 @@ public class DiagnosisAppointmentController {
 
     // Получить все связи диагнозов и записей
     @GetMapping
-    public List<DiagnosisAppointment> getAllDiagnosisAppointments() {
-        return diagnosisAppointmentService.getAllDiagnosisAppointments();
+    public ResponseEntity<List<DiagnosisAppointment>> getAllDiagnosisAppointments() {
+        List<DiagnosisAppointment> diagnosisAppointments = diagnosisAppointmentService.getAllDiagnosisAppointments();
+        return ResponseEntity.ok(diagnosisAppointments);
     }
 
     // Получить связь по ID
     @GetMapping("/{id}")
-    public DiagnosisAppointment getDiagnosisAppointmentById(@PathVariable Long id) {
+    public ResponseEntity<DiagnosisAppointment> getDiagnosisAppointmentById(@PathVariable Long id) {
         return diagnosisAppointmentService.getDiagnosisAppointmentById(id)
-                .orElseThrow(() -> new RuntimeException("DiagnosisAppointment not found"));
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Создать новую связь
     @PostMapping
-    public DiagnosisAppointment createDiagnosisAppointment(@RequestBody DiagnosisAppointment diagnosisAppointment) {
-        return diagnosisAppointmentService.createDiagnosisAppointment(diagnosisAppointment);
+    public ResponseEntity<DiagnosisAppointment> createDiagnosisAppointment(@RequestBody DiagnosisAppointment diagnosisAppointment) {
+        if (diagnosisAppointment.getAppointment() == null || diagnosisAppointment.getDiagnosis() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        DiagnosisAppointment createdDiagnosisAppointment = diagnosisAppointmentService.createDiagnosisAppointment(diagnosisAppointment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDiagnosisAppointment);
     }
 
     // Обновить связь
     @PutMapping("/{id}")
-    public DiagnosisAppointment updateDiagnosisAppointment(@PathVariable Long id, @RequestBody DiagnosisAppointment diagnosisAppointmentDetails) {
-        return diagnosisAppointmentService.updateDiagnosisAppointment(id, diagnosisAppointmentDetails);
+    public ResponseEntity<DiagnosisAppointment> updateDiagnosisAppointment(@PathVariable Long id, @RequestBody DiagnosisAppointment diagnosisAppointmentDetails) {
+        DiagnosisAppointment updatedDiagnosisAppointment = diagnosisAppointmentService.updateDiagnosisAppointment(id, diagnosisAppointmentDetails);
+        return ResponseEntity.ok(updatedDiagnosisAppointment);
     }
 
     // Удалить связь
     @DeleteMapping("/{id}")
-    public void deleteDiagnosisAppointment(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDiagnosisAppointment(@PathVariable Long id) {
         diagnosisAppointmentService.deleteDiagnosisAppointment(id);
+        return ResponseEntity.noContent().build();
     }
 }

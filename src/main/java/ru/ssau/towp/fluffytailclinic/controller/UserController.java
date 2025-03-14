@@ -3,7 +3,8 @@ package ru.ssau.towp.fluffytailclinic.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ssau.towp.fluffytailclinic.dto.request.UserDTO;
+import ru.ssau.towp.fluffytailclinic.controller.NF.ResourceNotFoundException;
+import ru.ssau.towp.fluffytailclinic.dto.UserDTO;
 import ru.ssau.towp.fluffytailclinic.models.User;
 import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
 import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
@@ -42,7 +43,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("Пользователь с ID " + id + " не найден"));
         return ResponseEntity.ok(new UserDTO(user));
     }
 

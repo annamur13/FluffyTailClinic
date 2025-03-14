@@ -33,32 +33,28 @@ public class Appointment {
 
     public Appointment(){}
 
-    public Object getDescription() {
-        return null;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescription(Object description) {
+    public void setDescription(String description) { this.description = description; }
+
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public Object getDate() {
-        return null;
+    public void setDate(LocalDateTime date) {this.date = date; }
+
+    public User getVet() {
+        return vet;
     }
 
-    public void setDate(Object date) {
+    public void setVet(User vet) {this.vet = vet; }
+
+    public Animal getAnimal() {
+        return animal;
     }
 
-    public Object getVet() {
-        return null;
-    }
-
-    public void setVet(Object vet) {
-    }
-
-    public Object getAnimal() {
-        return null;
-    }
-
-    public void setAnimal(Object animal) {
-    }
+    public void setAnimal(Animal animal) {this.animal = animal;    }
 }
 

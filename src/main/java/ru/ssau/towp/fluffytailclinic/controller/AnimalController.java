@@ -4,13 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ssau.towp.fluffytailclinic.dto.request.AnimalDTO;
+import ru.ssau.towp.fluffytailclinic.controller.NF.ResourceNotFoundException;
+import ru.ssau.towp.fluffytailclinic.dto.AnimalDTO;
 import ru.ssau.towp.fluffytailclinic.models.Animal;
 import ru.ssau.towp.fluffytailclinic.models.User;
 import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
 import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
-import ru.ssau.towp.fluffytailclinic.services.AnimalService;
-import ru.ssau.towp.fluffytailclinic.services.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ public class AnimalController {
     @GetMapping("/{id}")
     public ResponseEntity<AnimalDTO> getAnimalById(@PathVariable Long id) {
         Animal animal = animalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Животное не найдено"));
+                .orElseThrow(() -> new ResourceNotFoundException("Животное с ID " + id + " не найдено"));
         return ResponseEntity.ok(new AnimalDTO(animal));
     }
 
