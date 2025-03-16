@@ -38,6 +38,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Animal> animals;
 
     public User(){}

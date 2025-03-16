@@ -21,6 +21,7 @@ public class Animal {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
+    @JsonBackReference
     private User owner;
 
     public Animal(){}

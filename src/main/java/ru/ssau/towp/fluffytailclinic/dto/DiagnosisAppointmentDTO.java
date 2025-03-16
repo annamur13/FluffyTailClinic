@@ -1,5 +1,9 @@
 package ru.ssau.towp.fluffytailclinic.dto;
 
+import lombok.Data;
+import ru.ssau.towp.fluffytailclinic.models.DiagnosisAppointment;
+
+@Data
 public class DiagnosisAppointmentDTO {
     private Long id;
     private Long appointmentId;
@@ -7,30 +11,10 @@ public class DiagnosisAppointmentDTO {
 
     public DiagnosisAppointmentDTO() {}
 
-    public DiagnosisAppointmentDTO(Long id, Long appointmentId, Long diagnosisId, String notes) {
-        this.id = id;
-        this.appointmentId = appointmentId;
-        this.diagnosisId = diagnosisId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getAppointmentId() {
-        return appointmentId;
-    }
-
-    public void setAppointmentId(Long appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
-    public Long getDiagnosisId() {
-        return diagnosisId;
-    }
-
-    public void setDiagnosisId(Long diagnosisId) {
-        this.diagnosisId = diagnosisId;
+    public DiagnosisAppointmentDTO(DiagnosisAppointment diagnosisAppointment) {
+        this.id = diagnosisAppointment.getId();
+        this.appointmentId = diagnosisAppointment.getAppointment().getId();
+        this.diagnosisId = diagnosisAppointment.getDiagnosis().getId();
     }
 
 }

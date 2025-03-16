@@ -2,6 +2,7 @@ package ru.ssau.towp.fluffytailclinic.services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.ssau.towp.fluffytailclinic.models.User;
 import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
@@ -51,12 +52,9 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setName(userDetails.getName());
-        user.setPassword(userDetails.getPassword());
-        user.setPhone(userDetails.getPhone());
-        user.setEmail(userDetails.getEmail());
-        user.setDescription(userDetails.getDescription());
-        user.setRole(userDetails.getRole());
+        if (userDetails.getName() != null) user.setName(userDetails.getName());
+        if (userDetails.getEmail() != null) user.setEmail(userDetails.getEmail());
+        if (userDetails.getPassword() != null) user.setPassword(userDetails.getPassword());
 
         return userRepository.save(user);
     }

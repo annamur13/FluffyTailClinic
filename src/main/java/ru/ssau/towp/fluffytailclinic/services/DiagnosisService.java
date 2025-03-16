@@ -59,4 +59,8 @@ public class DiagnosisService {
     public Optional<Diagnosis> findDiagnosisByName(String diagnosisName) {
         return diagnosisRepository.findByName(diagnosisName);
     }
+
+    public boolean existsById(Long id) {
+        return diagnosisRepository.existsById(id);
+    }
 }

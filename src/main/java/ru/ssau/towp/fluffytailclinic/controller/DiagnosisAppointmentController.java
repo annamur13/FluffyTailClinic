@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ssau.towp.fluffytailclinic.controller.NF.ResourceNotFoundException;
+import ru.ssau.towp.fluffytailclinic.dto.AnimalDTO;
+import ru.ssau.towp.fluffytailclinic.dto.DiagnosisAppointmentDTO;
 import ru.ssau.towp.fluffytailclinic.models.DiagnosisAppointment;
 import ru.ssau.towp.fluffytailclinic.services.DiagnosisAppointmentService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/diagnosis-appointments")
@@ -18,17 +22,18 @@ public class DiagnosisAppointmentController {
 
     // Получить все связи диагнозов и записей
     @GetMapping
-    public ResponseEntity<List<DiagnosisAppointment>> getAllDiagnosisAppointments() {
-        List<DiagnosisAppointment> diagnosisAppointments = diagnosisAppointmentService.getAllDiagnosisAppointments();
-        return ResponseEntity.ok(diagnosisAppointments);
+    public List<DiagnosisAppointmentDTO> getAllDiagnosisAppointments() {
+        return diagnosisAppointmentService.getAllDiagnosisAppointments().stream()
+                .map(DiagnosisAppointmentDTO::new)
+                .collect(Collectors.toList());
     }
 
     // Получить связь по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DiagnosisAppointment> getDiagnosisAppointmentById(@PathVariable Long id) {
-        return diagnosisAppointmentService.getDiagnosisAppointmentById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<DiagnosisAppointmentDTO> getDiagnosisAppointmentById(@PathVariable Long id) {
+        DiagnosisAppointment diagnosisAppointment = diagnosisAppointmentService.getDiagnosisAppointmentById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("DiagnosisAppointment not found"));
+        return ResponseEntity.ok(new DiagnosisAppointmentDTO(diagnosisAppointment));
     }
 
     // Создать новую связь
