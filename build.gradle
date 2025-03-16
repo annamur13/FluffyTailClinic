@@ -54,6 +54,8 @@ dependencies {
 
 	testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 	//testImplementation "org.testcontainers:postgresql:1.24.0"
+
+	implementation 'org.liquibase:liquibase-core'
 }
 
 tasks.named('test') {

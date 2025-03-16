@@ -15,13 +15,13 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (roleRepository.count() == 0) {
-            System.out.println("Создаём роли ADMIN и USER...");
+            /*System.out.println("Создаём роли ADMIN и USER...");
 
             Role adminRole = new Role("ADMIN");
             Role userRole = new Role("USER");
 
             roleRepository.save(adminRole);
-            roleRepository.save(userRole);
+            roleRepository.save(userRole);*/
         }
     }
 }

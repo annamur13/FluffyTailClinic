@@ -1,0 +1,144 @@
+databaseChangeLog:
+  # Загрузка данных из первого CSV-файла (roles)
+  - changeSet:
+      id: 2 # Уникальный идентификатор changeset
+      author: aniam # Автор changeset
+      changes:
+        - loadData:
+            tableName: roles # Имя таблицы
+            file: db/changelog/data/roles.csv # Путь к CSV-файлу
+            separator: "," # Разделитель в CSV-файле
+            usePreparedStatements: true # Использовать подготовленные выражения
+            columns: # Описание столбцов
+              - column:
+                  name: role_id # Имя столбца в таблице
+                  type: NUMERIC # Тип данных
+              - column:
+                  name: name # Имя столбца в таблице
+                  type: STRING # Тип данных
+
+  # Загрузка данных из второго CSV-файла (users)
+  - changeSet:
+      id: 3
+      author: aniam
+      changes:
+        - loadData:
+            tableName: users # Имя таблицы
+            file: db/changelog/data/users.csv # Путь к CSV-файлу
+            separator: ","
+            usePreparedStatements: true
+            columns:
+              - column:
+                  name: role_id
+                  type: NUMERIC
+              - column:
+                  name: user_id
+                  type: NUMERIC
+              - column:
+                  name: user_description
+                  type: STRING
+              - column:
+                  name: user_email
+                  type: STRING
+              - column:
+                  name: user_name
+                  type: STRING
+              - column:
+                  name: user_password
+                  type: STRING
+              - column:
+                  name: user_phone
+                  type: STRING
+
+  # Загрузка данных из третьего CSV-файла (diagnoses)
+  - changeSet:
+      id: 4
+      author: aniam
+      changes:
+        - loadData:
+            tableName: diagnoses # Имя таблицы
+            file: db/changelog/data/diagnoses.csv # Путь к CSV-файлу
+            separator: ","
+            usePreparedStatements: true
+            columns:
+              - column:
+                  name: diagnosis_id
+                  type: NUMERIC
+              - column:
+                  name: description
+                  type: STRING
+              - column:
+                  name: name
+                  type: STRING
+
+  # Загрузка данных из четвертого CSV-файла (animals)
+  - changeSet:
+      id: 5
+      author: aniam
+      changes:
+        - loadData:
+            tableName: animals # Имя таблицы
+            file: db/changelog/data/animals.csv # Путь к CSV-файлу
+            separator: ","
+            usePreparedStatements: true
+            columns:
+              - column:
+                  name: animal_id
+                  type: NUMERIC
+              - column:
+                  name: owner_id
+                  type: NUMERIC
+              - column:
+                  name: animal_name
+                  type: STRING
+              - column:
+                  name: type
+                  type: STRING
+
+  # Загрузка данных из пятого CSV-файла (appointments)
+  - changeSet:
+      id: 6
+      author: aniam
+      changes:
+        - loadData:
+            tableName: appointments # Имя таблицы
+            file: db/changelog/data/appointments.csv # Путь к CSV-файлу
+            separator: ","
+            usePreparedStatements: true
+            columns:
+              - column:
+                  name: animal_id
+                  type: NUMERIC
+              - column:
+                  name: date
+                  type: datetime # Тип данных для даты и времени
+              - column:
+                  name: id
+                  type: NUMERIC
+              - column:
+                  name: vet_id
+                  type: NUMERIC
+              - column:
+                  name: description
+                  type: STRING
+
+  # Загрузка данных из шестого CSV-файла (appointment_diagnoses)
+  - changeSet:
+      id: 7
+      author: aniam
+      changes:
+        - loadData:
+            tableName: diagnosis_appointment # Имя таблицы
+            file: db/changelog/data/diagnosis_appointment.csv # Путь к CSV-файлу
+            separator: ","
+            usePreparedStatements: true
+            columns:
+              - column:
+                  name: appointment_id
+                  type: NUMERIC
+              - column:
+                  name: diag_app_id
+                  type: NUMERIC
+              - column:
+                  name: diagnosis_id
+                  type: NUMERIC
