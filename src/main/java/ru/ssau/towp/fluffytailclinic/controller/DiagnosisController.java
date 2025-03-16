@@ -1,6 +1,7 @@
 package ru.ssau.towp.fluffytailclinic.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.towp.fluffytailclinic.models.Diagnosis;
 import ru.ssau.towp.fluffytailclinic.services.DiagnosisService;
@@ -22,9 +23,10 @@ public class DiagnosisController {
 
     // Получить диагноз по ID
     @GetMapping("/{id}")
-    public Diagnosis getDiagnosisById(@PathVariable Long id) {
+    public ResponseEntity<Diagnosis> getDiagnosisById(@PathVariable Long id) {
         return diagnosisService.getDiagnosisById(id)
-                .orElseThrow(() -> new RuntimeException("Diagnosis not found"));
+                .map(diagnosis -> ResponseEntity.ok(diagnosis))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Создать новый диагноз
