@@ -12,9 +12,9 @@ import ru.ssau.towp.fluffytailclinic.models.User;
 import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
 import ru.ssau.towp.fluffytailclinic.repository.AppointmentRepository;
 import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
-import ru.ssau.towp.fluffytailclinic.services.AppointmentService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/appointments")
@@ -24,7 +24,10 @@ public class AppointmentController {
     private final AnimalRepository animalRepository;
     private final UserRepository userRepository;
 
-    public AppointmentController(AppointmentRepository appointmentRepository, AnimalRepository animalRepository, UserRepository userRepository) {
+    @Autowired
+    public AppointmentController(AppointmentRepository appointmentRepository,
+                                 AnimalRepository animalRepository,
+                                 UserRepository userRepository) {
         this.appointmentRepository = appointmentRepository;
         this.animalRepository = animalRepository;
         this.userRepository = userRepository;
@@ -36,7 +39,7 @@ public class AppointmentController {
         List<AppointmentDTO> appointments = appointmentRepository.findAll()
                 .stream()
                 .map(AppointmentDTO::new)
-                .toList();
+                .collect(Collectors.toList());
         return ResponseEntity.ok(appointments);
     }
 
@@ -54,7 +57,6 @@ public class AppointmentController {
         Animal animal = animalRepository.findById(appointmentDTO.getAnimalId())
                 .orElseThrow(() -> new ResourceNotFoundException("Животное с ID " + appointmentDTO.getAnimalId() + " не найдено"));
 
-
         User vet = userRepository.findById(appointmentDTO.getVetId())
                 .orElseThrow(() -> new ResourceNotFoundException("Ветеринар с ID " + appointmentDTO.getVetId() + " не найден"));
 
@@ -62,6 +64,7 @@ public class AppointmentController {
         appointment.setAnimal(animal);
         appointment.setVet(vet);
         appointment.setDate(appointmentDTO.getDate());
+        appointment.setTime(appointmentDTO.getTime());
         appointment.setDescription(appointmentDTO.getDescription());
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
@@ -83,6 +86,7 @@ public class AppointmentController {
         appointment.setAnimal(animal);
         appointment.setVet(vet);
         appointment.setDate(appointmentDTO.getDate());
+        appointment.setTime(appointmentDTO.getTime());
         appointment.setDescription(appointmentDTO.getDescription());
 
         Appointment updatedAppointment = appointmentRepository.save(appointment);

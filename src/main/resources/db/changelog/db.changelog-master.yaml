@@ -1,0 +1,5 @@
+databaseChangeLog: # Основной элемент changelog
+  - include: # Включаем существующие миграции
+      file: db/changelog/changeset/create-tables.yaml # Путь к файлу с созданием таблиц
+  - include: # Включаем существующие миграции
+      file: db/changelog/changeset/insert-data.yaml # Путь к файлу с данными таблиц

@@ -1,0 +1,260 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1742140412445-1
+      author: aniam (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: roles_pkey
+                  name: role_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+            tableName: roles
+  - changeSet:
+      id: 1742140412445-2
+      author: aniam (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: roles_name_key
+            tableName: roles
+  - changeSet:
+      id: 1742140412445-3
+      author: aniam (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: animals_pkey
+                  name: animal_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: owner_id
+                  type: BIGINT
+              - column:
+                  name: animal_name
+                  type: VARCHAR(255)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+            tableName: animals
+  - changeSet:
+      id: 1742140412445-4
+      author: aniam (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: animal_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: appointments_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: vet_id
+                  type: BIGINT
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+            tableName: appointments
+  - changeSet:
+      id: 1742140412445-5
+      author: aniam (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: diagnoses_pkey
+                  name: diagnosis_id
+                  type: BIGINT
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: diagnoses
+  - changeSet:
+      id: 1742140412445-6
+      author: aniam (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: appointment_id
+                  type: BIGINT
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: diagnosis_appointment_pkey
+                  name: diag_app_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: diagnosis_id
+                  type: BIGINT
+            tableName: diagnosis_appointment
+  - changeSet:
+      id: 1742140412445-7
+      author: aniam (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: role_id
+                  type: BIGINT
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: user_description
+                  type: VARCHAR(255)
+              - column:
+                  name: user_email
+                  type: VARCHAR(255)
+              - column:
+                  name: user_name
+                  type: VARCHAR(255)
+              - column:
+                  name: user_password
+                  type: VARCHAR(255)
+              - column:
+                  name: user_phone
+                  type: VARCHAR(255)
+            tableName: users
+  - changeSet:
+      id: 1742140412445-8
+      author: aniam (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: animal_id
+            baseTableName: appointments
+            constraintName: fk95vepu86o8syqtux9gkr71bhy
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: animal_id
+            referencedTableName: animals
+            validate: true
+  - changeSet:
+      id: 1742140412445-9
+      author: aniam (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: appointment_id
+            baseTableName: diagnosis_appointment
+            constraintName: fkfb1hky5nx0cmyxxyr7lq3w7lw
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: appointments
+            validate: true
+  - changeSet:
+      id: 1742140412445-10
+      author: aniam (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: vet_id
+            baseTableName: appointments
+            constraintName: fkflxgtakjdxnyvpu2krujv343i
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1742140412445-11
+      author: aniam (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: owner_id
+            baseTableName: animals
+            constraintName: fkhpcrtp144xytkvtb001js3ldp
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: user_id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1742140412445-12
+      author: aniam (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: diagnosis_id
+            baseTableName: diagnosis_appointment
+            constraintName: fkl4j0y281yo8nosbx2yl2alctj
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: diagnosis_id
+            referencedTableName: diagnoses
+            validate: true
+  - changeSet:
+      id: 1742140412445-13
+      author: aniam (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: users
+            constraintName: fkp56c1712k691lhsyewcssf40f
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: role_id
+            referencedTableName: roles
+            validate: true
+

@@ -3,11 +3,12 @@ package ru.ssau.towp.fluffytailclinic.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.ssau.towp.fluffytailclinic.controller.DiagnosisController;
 import ru.ssau.towp.fluffytailclinic.models.Diagnosis;
 import ru.ssau.towp.fluffytailclinic.services.DiagnosisService;
@@ -19,25 +20,26 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = DiagnosisController.class) // Тестируем DiagnosisController
+@ExtendWith(MockitoExtension.class)
 public class DiagnosisControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
-    private DiagnosisService diagnosisService; // Используем DiagnosisService
+    @Mock
+    private DiagnosisService diagnosisService; // Мокируем DiagnosisService
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @InjectMocks
+    private DiagnosisController diagnosisController; // Внедряем моки в контроллер
 
     private List<Diagnosis> diagnosisList;
 
     @BeforeEach
     void setUp() {
+        // Настроим MockMvc для тестирования контроллера
+        mockMvc = MockMvcBuilders.standaloneSetup(diagnosisController).build();
+
         // Инициализируем тестовые данные для Diagnosis
         Diagnosis diagnosis1 = new Diagnosis("Diagnosis 1", "Description 1");
         Diagnosis diagnosis2 = new Diagnosis("Diagnosis 2", "Description 2");
@@ -49,13 +51,14 @@ public class DiagnosisControllerTest {
     @Test
     void shouldFetchAllDiagnoses() throws Exception {
         // Мокируем вызов сервиса
-        given(diagnosisService.findAllDiagnoses()).willReturn(diagnosisList);
+        given(diagnosisService.getAllDiagnoses()).willReturn(diagnosisList);
 
         // Выполняем запрос и проверяем результат
-        this.mockMvc.perform(get("/api/diagnoses"))
+        mockMvc.perform(get("/api/diagnoses"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(diagnosisList.size())));
     }
+
 
     @Test
     void shouldFindDiagnosisById() throws Exception {
@@ -64,27 +67,25 @@ public class DiagnosisControllerTest {
         diagnosis.setId(diagnosisId);
 
         // Мокируем вызов сервиса
-        given(diagnosisService.findDiagnosisById(diagnosisId)).willReturn(Optional.of(diagnosis));
+        given(diagnosisService.getDiagnosisById(diagnosisId)).willReturn(Optional.of(diagnosis));
 
         // Выполняем запрос и проверяем результат
-        this.mockMvc.perform(get("/api/diagnoses/{id}", diagnosisId))
+        mockMvc.perform(get("/api/diagnoses/{id}", diagnosisId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(diagnosis.getName()))
                 .andExpect(jsonPath("$.description").value(diagnosis.getDescription()));
     }
 
     @Test
-    void shouldFindDiagnosisByName() throws Exception {
-        String diagnosisName = "Diagnosis 1";
-        Diagnosis diagnosis = new Diagnosis(diagnosisName, "Description 1");
+    void shouldReturnNotFoundWhenDiagnosisNotFound() throws Exception {
+        Long diagnosisId = 1L;
 
-        // Мокируем вызов сервиса
-        given(diagnosisService.findDiagnosisByName(diagnosisName)).willReturn(Optional.of(diagnosis));
+        // Мокируем вызов сервиса для несуществующего диагноза
+        given(diagnosisService.getDiagnosisById(diagnosisId)).willReturn(Optional.empty());
 
-        // Выполняем запрос и проверяем результат
-        this.mockMvc.perform(get("/api/diagnoses/name/{name}", diagnosisName))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(diagnosis.getName()))
-                .andExpect(jsonPath("$.description").value(diagnosis.getDescription()));
+        // Выполняем запрос и проверяем результат (ожидаем 404)
+        mockMvc.perform(get("/api/diagnoses/{id}", diagnosisId))
+                .andExpect(status().isNotFound());
     }
+
 }

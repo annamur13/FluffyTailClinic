@@ -43,5 +43,7 @@ public class User {
 
     public User(){}
 
+    public User(long l, String johnDoe, String mail) {
+    }
 }
 
