@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.ssau.towp.fluffytailclinic.models.Appointment;
+import ru.ssau.towp.fluffytailclinic.models.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,4 +25,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     // Поиск по дате и времени
     @Query(value = "SELECT a.* FROM appointments AS a WHERE a.date = :date", nativeQuery = true)
     List<Appointment> findByDate(@Param("date") LocalDateTime date);
+
+    //Поиск по владельцу
+    @Query("SELECT a FROM Appointment a WHERE a.animal.owner = :user")
+    List<Appointment> findByAnimalOwner(@Param("user") User user);
 }

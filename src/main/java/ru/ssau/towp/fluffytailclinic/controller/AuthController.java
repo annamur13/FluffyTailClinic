@@ -28,7 +28,7 @@ public class AuthController {
                                @RequestParam String email,
                                @RequestParam String password) {
 
-        Role userRole = roleRepository.findByName("USER");
+        Role userRole = roleRepository.findByName("Хозяин");
 
         User user = new User();
         user.setName(username);

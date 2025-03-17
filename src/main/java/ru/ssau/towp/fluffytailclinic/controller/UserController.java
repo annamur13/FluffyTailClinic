@@ -2,12 +2,16 @@ package ru.ssau.towp.fluffytailclinic.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.ssau.towp.fluffytailclinic.controller.NF.ResourceNotFoundException;
+import ru.ssau.towp.fluffytailclinic.dto.AppointmentDTO;
 import ru.ssau.towp.fluffytailclinic.dto.UserDTO;
 import ru.ssau.towp.fluffytailclinic.models.User;
 import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
+import ru.ssau.towp.fluffytailclinic.repository.AppointmentRepository;
 import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
 import ru.ssau.towp.fluffytailclinic.services.AnimalService;
 import ru.ssau.towp.fluffytailclinic.services.UserService;
@@ -25,12 +29,14 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final AnimalRepository animalRepository;
+    private final AppointmentRepository appointmentRepository;
 
     @Autowired
-    public UserController(AnimalRepository animalRepository, UserRepository userRepository, UserService userService) {
+    public UserController(AnimalRepository animalRepository, UserRepository userRepository, UserService userService, AnimalService animalService, AppointmentRepository appointmentRepository) {
         this.animalRepository = animalRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.appointmentRepository = appointmentRepository;
     }
 
 
@@ -51,6 +57,19 @@ public class UserController {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
         return ResponseEntity.ok(new UserDTO(user));
+    }
+
+    @GetMapping("/appointment/{id}")
+    public ResponseEntity<List<AppointmentDTO>> getAppointmentsByUserId(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        List<AppointmentDTO> appointments = appointmentRepository.findByAnimalOwner(user)
+                .stream()
+                .map(AppointmentDTO::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(appointments);
     }
 
     // Получить пользователя по email
