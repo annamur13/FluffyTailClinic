@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,6 +35,7 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -44,19 +46,35 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+        return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register").permitAll() // Разрешаем регистрацию и вход
-                        .requestMatchers("/login").permitAll() // Разрешаем регистрацию и вход
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers( "/register", "/css/**", "/js/**", "/images/**","login.html","register.html","/error","error.html","/dashboard","dashboard.html").permitAll() // Разрешаем доступ
                         .requestMatchers("/api/**").authenticated() // Все пользователи должны быть авторизованы
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+                .formLogin(form -> form
+                        .loginPage("/login") // Указываем страницу входа
+                        .permitAll()
+                        .defaultSuccessUrl("/dashboard")
+                )
+                .logout((logout) -> logout.permitAll())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // Открываем сессию для каждого запроса
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/error")  // Перенаправление на кастомную страницу ошибки
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
     }
+
+
+
 }

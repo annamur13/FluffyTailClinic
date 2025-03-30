@@ -2,6 +2,7 @@ package ru.ssau.towp.fluffytailclinic.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.towp.fluffytailclinic.models.Role;
 import ru.ssau.towp.fluffytailclinic.models.User;
@@ -11,7 +12,7 @@ import ru.ssau.towp.fluffytailclinic.security.JwtUtil;
 
 import java.util.Optional;
 
-@RestController
+@Controller
 public class AuthController {
 
     private final UserRepository userRepository;
@@ -25,6 +26,16 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.jwtUtil = jwtUtil;
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login.html";
+    }
+
+    @GetMapping("/register")
+    public String registerPage(){
+        return "register.html";
     }
 
     @PostMapping("/register")
