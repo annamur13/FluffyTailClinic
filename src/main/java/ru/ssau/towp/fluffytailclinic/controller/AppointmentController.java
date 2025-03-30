@@ -12,6 +12,7 @@ import ru.ssau.towp.fluffytailclinic.models.User;
 import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
 import ru.ssau.towp.fluffytailclinic.repository.AppointmentRepository;
 import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
+import ru.ssau.towp.fluffytailclinic.services.AppointmentService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,86 +21,40 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/appointments")
 public class AppointmentController {
 
-    private final AppointmentRepository appointmentRepository;
-    private final AnimalRepository animalRepository;
-    private final UserRepository userRepository;
+    private final AppointmentService appointmentService;
 
     @Autowired
-    public AppointmentController(AppointmentRepository appointmentRepository,
-                                 AnimalRepository animalRepository,
-                                 UserRepository userRepository) {
-        this.appointmentRepository = appointmentRepository;
-        this.animalRepository = animalRepository;
-        this.userRepository = userRepository;
+    public AppointmentController(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
     }
 
     // Получить все приёмы
     @GetMapping
     public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
-        List<AppointmentDTO> appointments = appointmentRepository.findAll()
-                .stream()
-                .map(AppointmentDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(appointments);
+        return appointmentService.getAllAppointments();
     }
 
     // Получить приём по ID
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDTO> getAppointmentById(@PathVariable Long id) {
-        Appointment appointment = appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Приём с ID " + id + " не найден"));
-        return ResponseEntity.ok(new AppointmentDTO(appointment));
+        return appointmentService.getAppointmentById(id);
     }
 
     // Создать новый приём
     @PostMapping
     public ResponseEntity<AppointmentDTO> createAppointment(@RequestBody AppointmentDTO appointmentDTO) {
-        Animal animal = animalRepository.findById(appointmentDTO.getAnimalId())
-                .orElseThrow(() -> new ResourceNotFoundException("Животное с ID " + appointmentDTO.getAnimalId() + " не найдено"));
-
-        User vet = userRepository.findById(appointmentDTO.getVetId())
-                .orElseThrow(() -> new ResourceNotFoundException("Ветеринар с ID " + appointmentDTO.getVetId() + " не найден"));
-
-        Appointment appointment = new Appointment();
-        appointment.setAnimal(animal);
-        appointment.setVet(vet);
-        appointment.setDate(appointmentDTO.getDate());
-        appointment.setTime(appointmentDTO.getTime());
-        appointment.setDescription(appointmentDTO.getDescription());
-
-        Appointment savedAppointment = appointmentRepository.save(appointment);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new AppointmentDTO(savedAppointment));
+        return appointmentService.createAppointment(appointmentDTO);
     }
 
     // Обновить приём
     @PutMapping("/{id}")
     public ResponseEntity<AppointmentDTO> updateAppointment(@PathVariable Long id, @RequestBody AppointmentDTO appointmentDTO) {
-        Appointment appointment = appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Приём с ID " + id + " не найден"));
-
-        Animal animal = animalRepository.findById(appointmentDTO.getAnimalId())
-                .orElseThrow(() -> new ResourceNotFoundException("Животное с ID " + appointmentDTO.getAnimalId() + " не найдено"));
-
-        User vet = userRepository.findById(appointmentDTO.getVetId())
-                .orElseThrow(() -> new ResourceNotFoundException("Ветеринар с ID " + appointmentDTO.getVetId() + " не найден"));
-
-        appointment.setAnimal(animal);
-        appointment.setVet(vet);
-        appointment.setDate(appointmentDTO.getDate());
-        appointment.setTime(appointmentDTO.getTime());
-        appointment.setDescription(appointmentDTO.getDescription());
-
-        Appointment updatedAppointment = appointmentRepository.save(appointment);
-        return ResponseEntity.ok(new AppointmentDTO(updatedAppointment));
+        return appointmentService.updateAppointment(id, appointmentDTO);
     }
 
     // Удалить приём
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
-        Appointment appointment = appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Приём с ID " + id + " не найден"));
-
-        appointmentRepository.delete(appointment);
-        return ResponseEntity.noContent().build();
+        return appointmentService.deleteAppointment(id);
     }
 }

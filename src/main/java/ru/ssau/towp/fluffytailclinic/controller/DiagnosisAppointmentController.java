@@ -8,6 +8,8 @@ import ru.ssau.towp.fluffytailclinic.controller.NF.ResourceNotFoundException;
 import ru.ssau.towp.fluffytailclinic.dto.AnimalDTO;
 import ru.ssau.towp.fluffytailclinic.dto.DiagnosisAppointmentDTO;
 import ru.ssau.towp.fluffytailclinic.models.DiagnosisAppointment;
+import ru.ssau.towp.fluffytailclinic.repository.DiagnosisAppointmentRepository;
+import ru.ssau.towp.fluffytailclinic.repository.DiagnosisRepository;
 import ru.ssau.towp.fluffytailclinic.services.DiagnosisAppointmentService;
 
 import java.util.List;
@@ -19,32 +21,24 @@ public class DiagnosisAppointmentController {
 
     @Autowired
     private DiagnosisAppointmentService diagnosisAppointmentService;
+    private DiagnosisAppointmentRepository diagnosisAppointmentRepository;
 
     // Получить все связи диагнозов и записей
     @GetMapping
     public List<DiagnosisAppointmentDTO> getAllDiagnosisAppointments() {
-        return diagnosisAppointmentService.getAllDiagnosisAppointments().stream()
-                .map(DiagnosisAppointmentDTO::new)
-                .collect(Collectors.toList());
+        return diagnosisAppointmentService.getAllDiagnosisAppointments();
     }
 
     // Получить связь по ID
     @GetMapping("/{id}")
     public ResponseEntity<DiagnosisAppointmentDTO> getDiagnosisAppointmentById(@PathVariable Long id) {
-        DiagnosisAppointment diagnosisAppointment = diagnosisAppointmentService.getDiagnosisAppointmentById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("DiagnosisAppointment not found"));
-        return ResponseEntity.ok(new DiagnosisAppointmentDTO(diagnosisAppointment));
+        return diagnosisAppointmentService.getDiagnosisAppointmentById(id);
     }
 
     // Создать новую связь
     @PostMapping
     public ResponseEntity<DiagnosisAppointment> createDiagnosisAppointment(@RequestBody DiagnosisAppointment diagnosisAppointment) {
-        if (diagnosisAppointment.getAppointment() == null || diagnosisAppointment.getDiagnosis() == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        DiagnosisAppointment createdDiagnosisAppointment = diagnosisAppointmentService.createDiagnosisAppointment(diagnosisAppointment);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdDiagnosisAppointment);
+        return diagnosisAppointmentService.createDiagnosisAppointment(diagnosisAppointment);
     }
 
     // Обновить связь
@@ -57,7 +51,6 @@ public class DiagnosisAppointmentController {
     // Удалить связь
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDiagnosisAppointment(@PathVariable Long id) {
-        diagnosisAppointmentService.deleteDiagnosisAppointment(id);
-        return ResponseEntity.noContent().build();
+        return diagnosisAppointmentService.deleteDiagnosisAppointment(id);
     }
 }

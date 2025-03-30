@@ -43,33 +43,19 @@ public class UserController {
     // Получить всех пользователей
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userRepository.findAll()
-                .stream()
-                .map(UserDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(users);
+        return userService.getAllUsers();
     }
 
 
     // Получить пользователя по ID
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-        return ResponseEntity.ok(new UserDTO(user));
+        return userService.getUserById(id);
     }
 
     @GetMapping("/appointment/{id}")
     public ResponseEntity<List<AppointmentDTO>> getAppointmentsByUserId(@PathVariable Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        List<AppointmentDTO> appointments = appointmentRepository.findByAnimalOwner(user)
-                .stream()
-                .map(AppointmentDTO::new)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(appointments);
+        return userService.getAppointmentsByUserId(id);
     }
 
     // Получить пользователя по email

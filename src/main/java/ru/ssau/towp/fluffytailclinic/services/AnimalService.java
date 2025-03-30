@@ -1,87 +1,88 @@
 package ru.ssau.towp.fluffytailclinic.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.ssau.towp.fluffytailclinic.controller.NF.ResourceNotFoundException;
+import ru.ssau.towp.fluffytailclinic.dto.AnimalDTO;
 import ru.ssau.towp.fluffytailclinic.models.Animal;
+import ru.ssau.towp.fluffytailclinic.models.User;
 import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
+import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AnimalService {
 
     private final AnimalRepository animalRepository;
+        private final UserRepository userRepository;
 
     @Autowired
-    public AnimalService(AnimalRepository animalRepository) {
+    public AnimalService(AnimalRepository animalRepository, UserRepository userRepository) {
         this.animalRepository = animalRepository;
+        this.userRepository = userRepository;
     }
 
-    /**
-     * Получить список всех животных.
-     *
-     * @return список всех животных
-     */
-    public List<Animal> getAllAnimals() {
-        return animalRepository.findAll();
+    public List<AnimalDTO> getAllAnimals() {
+        return animalRepository.findAll().stream()
+                .map(AnimalDTO::new)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Найти животное по ID.
-     *
-     * @param id идентификатор животного
-     * @return Optional с животным, если оно найдено
-     */
-    public Optional<Animal> getAnimalById(Long id) {
-        return animalRepository.findById(id);
-    }
-
-    /**
-     * Создать новое животное.
-     *
-     * @param animal данные животного
-     * @return созданное животное
-     */
-    public Animal createAnimal(Animal animal) {
-        return animalRepository.save(animal);
-    }
-
-    /**
-     * Обновить данные животного.
-     *
-     * @param id           идентификатор животного
-     * @param animalDetails новые данные животного
-     * @return обновлённое животное
-     * @throws RuntimeException если животное не найдено
-     */
-    public Animal updateAnimal(Long id, Animal animalDetails) {
+    public ResponseEntity<AnimalDTO> getAnimalById(@PathVariable Long id) {
         Animal animal = animalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Animal not found"));
-        animal.setName(animalDetails.getName());
-        animal.setType(animalDetails.getType());
-        animal.setOwner(animalDetails.getOwner()); // Если есть поле "владелец"
-        return animalRepository.save(animal);
+                .orElseThrow(() -> new ResourceNotFoundException("Животное с ID " + id + " не найдено"));
+        return ResponseEntity.ok(new AnimalDTO(animal));
     }
 
-    /**
-     * Удалить животное по ID.
-     *
-     * @param id идентификатор животного
-     */
-    public void deleteAnimal(Long id) {
+    public ResponseEntity<Animal> createAnimal(@RequestBody Animal animal) {
+        System.out.println("Полученные данные: " + animal);
+
+        if (animal == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        if (animal.getOwner() == null || animal.getOwner().getId() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User owner = userRepository.findById(animal.getOwner().getId())
+                .orElseThrow(() -> new RuntimeException("Владелец не найден"));
+
+        animal.setOwner(owner);
+        Animal savedAnimal = animalRepository.save(animal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedAnimal);
+    }
+
+    public ResponseEntity<Animal> updateAnimal(@PathVariable Long id, @RequestBody Animal updatedAnimal) {
+        return animalRepository.findById(id)
+                .map(animal -> {
+                    animal.setName(updatedAnimal.getName());
+                    animal.setType(updatedAnimal.getType());
+
+                    if (updatedAnimal.getOwner() != null && updatedAnimal.getOwner().getId() != null) {
+                        User owner = userRepository.findById(updatedAnimal.getOwner().getId())
+                                .orElseThrow(() -> new RuntimeException("Владелец не найден"));
+                        animal.setOwner(owner);
+                    }
+
+                    animalRepository.save(animal);
+                    return ResponseEntity.ok(animal);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<Void> deleteAnimal(@PathVariable Long id) {
+        if (!animalRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         animalRepository.deleteById(id);
-    }
-
-    /**
-     * Найти животное по ID (альтернативная версия с исключением).
-     *
-     * @param animalId идентификатор животного
-     * @return найденное животное
-     * @throws RuntimeException если животное не найдено
-     */
-    public Animal findByAnimalId(Long animalId) {
-        return animalRepository.findById(animalId)
-                .orElseThrow(() -> new RuntimeException("Animal with id " + animalId + " not found"));
+        return ResponseEntity.noContent().build();
     }
 }
