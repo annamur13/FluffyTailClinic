@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<h2>Вход</h2>
+
+<form id="login-form">
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email" required>
+
+    <label for="password">Пароль:</label>
+    <input type="text" id="password" name="password" required>
+
+    <button type="submit">Войти</button>
+</form>
+
+<p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Проверяем, есть ли токен, если есть, перекидываем на dashboard
+        const token = localStorage.getItem("token");
+        if (token) {
+            fetch("/me", {
+                headers: { "Authorization": "Bearer " + token }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = "/dashboard";
+                    }
+                })
+                .catch(() => {});
+        }
+
+        // Обработка формы логина
+        document.getElementById("login-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            let response = await fetch("/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: new URLSearchParams({email, password})
+            });
+
+            let result = await response.json();
+            console.log("Ответ сервера:", result); // ЛОГ В КОНСОЛЬ ДЛЯ ОТЛАДКИ
+
+            if (response.ok && result.token) {
+                localStorage.setItem("token", result.token); // Сохраняем JWT
+                console.log("Токен сохранён, редиректим...");
+                window.location.href = "/dashboard"; // Переход на профиль
+            } else {
+                document.getElementById("error-message").innerText = result.error || "Ошибка входа";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

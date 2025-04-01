@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Личный кабинет</title>
+    <script>
+        async function loadUserInfo() {
+            let token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "/login";
+                return;
+            }
+
+            let response = await fetch("/me", {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            let result = await response.json();
+
+            if (response.ok) {
+                document.getElementById("user-name").innerText = result.name;
+                document.getElementById("user-email").innerText = result.email;
+                document.getElementById("user-role").innerText = result.role;
+            } else {
+                document.getElementById("error-message").innerText = result.error;
+            }
+        }
+
+        window.onload = loadUserInfo;
+    </script>
+</head>
+<body>
+<h2>Личный кабинет</h2>
+<p><strong>Имя:</strong> <span id="user-name"></span></p>
+<p><strong>Email:</strong> <span id="user-email"></span></p>
+<p><strong>Роль:</strong> <span id="user-role"></span></p>
+
+<p id="error-message" style="color: red;"></p>
+
+<button onclick="logout()">Выйти</button>
+
+<script>
+    function logout() {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+    }
+</script>
+</body>
+</html>

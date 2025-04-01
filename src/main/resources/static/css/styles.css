@@ -1,16 +1,22 @@
 body {
     font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
     margin: 50px;
+    padding: 0;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    max-width: 300px;
+.container {
+    width: 300px;
+    margin: 100px auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
-label {
-    margin-top: 10px;
+h2 {
+    color: #333;
 }
 
 input {
@@ -25,4 +31,13 @@ button {
     color: white;
     border: none;
     cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#error-message {
+    color: red;
+    font-size: 14px;
 }

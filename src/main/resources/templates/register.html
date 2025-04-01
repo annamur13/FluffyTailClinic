@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Регистрация</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<h2>Регистрация</h2>
+
+<form id="register-form">
+  <label for="username">Имя пользователя:</label>
+  <input type="text" id="username" name="username" required>
+
+  <label for="email">Email:</label>
+  <input type="text" id="email" name="email" required>
+
+  <label for="password">Пароль:</label>
+  <input type="text" id="password" name="password" required>
+
+  <button type="submit">Зарегистрироваться</button>
+</form>
+
+<p>Уже есть аккаунт? <a href="/login">Войти</a></p>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Проверяем, есть ли токен
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetch("/me", {
+        headers: { "Authorization": "Bearer " + token }
+      })
+              .then(response => {
+                if (response.ok) {
+                  window.location.href = "/dashboard"; // Если токен валиден, переходим в кабинет
+                }
+              })
+              .catch(() => {});
+    }
+
+    // Обработка формы регистрации
+    document.getElementById("register-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(this);
+      fetch("/register", {
+        method: "POST",
+        body: formData
+      })
+              .then(response => {
+                if (response.ok) {
+                  window.location.href = "/dashboard"; // После успешной регистрации переходим на /dashboard
+                } else {
+                  alert("Ошибка регистрации!");
+                }
+              })
+              .catch(() => alert("Ошибка сети!"));
+    });
+  });
+</script>
+
+</body>
+</html>

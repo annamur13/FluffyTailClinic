@@ -1,6 +1,8 @@
 package ru.ssau.towp.fluffytailclinic.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import ru.ssau.towp.fluffytailclinic.repository.RoleRepository;
 import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
 import ru.ssau.towp.fluffytailclinic.security.JwtUtil;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -26,6 +29,11 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.jwtUtil = jwtUtil;
+    }
+
+    @GetMapping("/")
+    public String startloginPage() {
+        return "login.html";
     }
 
     @GetMapping("/login")
@@ -63,20 +71,36 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<Map<String, String>> loginUser(@RequestParam String email, @RequestParam String password) {
         Optional<User> userOpt = userRepository.findByEmail(email);
 
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(401).body("Invalid email or password");
+        if (userOpt.isEmpty() || !passwordEncoder.matches(password, userOpt.get().getPassword())) {
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
         }
 
-        User user = userOpt.get();
+        String token = jwtUtil.generateToken(userOpt.get().getEmail());
+        return ResponseEntity.ok(Map.of("token", token));
+    }
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid email or password");
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Не авторизован"));
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
-        return ResponseEntity.ok(token);
+        Optional<User> userOptional = userRepository.findByEmail(userDetails.getUsername());
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of("error", "Пользователь не найден"));
+        }
+
+        User user = userOptional.get();
+        return ResponseEntity.ok(Map.of(
+                "id", user.getId(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "role", user.getRole().getName()
+        ));
     }
 }
