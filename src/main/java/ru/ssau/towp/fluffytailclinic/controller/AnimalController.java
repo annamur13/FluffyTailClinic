@@ -24,6 +24,11 @@ public class AnimalController {
         return animalService.getAllAnimals();
     }
 
+    @GetMapping("/mine")
+    public ResponseEntity<List<Animal>> getUserPets(@RequestParam Long userId) {
+        return animalService.getUserPets(userId);
+    }
+
     // 🔹 Получение животного по ID
     @GetMapping("/{id}")
     public ResponseEntity<AnimalDTO> getAnimalById(@PathVariable Long id) {

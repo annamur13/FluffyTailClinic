@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="/css/styles.css">
     <title>Личный кабинет</title>
     <script>
+
         async function loadUserInfo() {
             let token = localStorage.getItem("token");
             if (!token) {
@@ -22,9 +23,70 @@
                 document.getElementById("user-name").innerText = result.name;
                 document.getElementById("user-email").innerText = result.email;
                 document.getElementById("user-role").innerText = result.role;
+                loadPets();
+                loadAppointments();
             } else {
                 document.getElementById("error-message").innerText = result.error;
             }
+        }
+
+        async function loadPets() {
+            let token = localStorage.getItem("token");
+            let response = await fetch("/api/animals", {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            let petsList = document.getElementById("pets-list");
+            petsList.innerHTML = "";
+
+            let pets = await response.json();
+            pets.forEach(pet => {
+                let petItem = document.createElement("li");
+                petItem.innerHTML = `${pet.name} (${pet.type})
+                    <button onclick="deletePet(${pet.id})">Удалить</button>`;
+                petsList.appendChild(petItem);
+            });
+        }
+
+        async function deletePet(petId) {
+            let token = localStorage.getItem("token");
+            await fetch(`/api/animals/${petId}`, {
+                method: "DELETE",
+                headers: { "Authorization": "Bearer " + token }
+            });
+            loadPets();
+        }
+
+        async function loadAppointments() {
+            let token = localStorage.getItem("token");
+            let response = await fetch("/api/appointments", {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            let appointmentsList = document.getElementById("appointments-list");
+            appointmentsList.innerHTML = "";
+
+            let appointments = await response.json();
+            appointments.forEach(app => {
+                let appItem = document.createElement("li");
+                appItem.innerHTML = `Приём на ${app.date}
+                    <button onclick="deleteAppointment(${app.id})">Отменить</button>`;
+                appointmentsList.appendChild(appItem);
+            });
+        }
+
+        async function deleteAppointment(appId) {
+            let token = localStorage.getItem("token");
+            await fetch(`/api/appointments/${appId}`, {
+                method: "DELETE",
+                headers: { "Authorization": "Bearer " + token }
+            });
+            loadAppointments();
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "/login";
         }
 
         window.onload = loadUserInfo;
@@ -36,15 +98,16 @@
 <p><strong>Email:</strong> <span id="user-email"></span></p>
 <p><strong>Роль:</strong> <span id="user-role"></span></p>
 
+<h3>Ваши животные</h3>
+<ul id="pets-list"></ul>
+<a href="/add-pet"><button>Добавить животное</button></a>
+
+<h3>Ваши приёмы</h3>
+<ul id="appointments-list"></ul>
+<a href="/add-appointment"><button>Записаться на приём</button></a>
+
 <p id="error-message" style="color: red;"></p>
 
 <button onclick="logout()">Выйти</button>
-
-<script>
-    function logout() {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-    }
-</script>
 </body>
 </html>

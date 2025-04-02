@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.ssau.towp.fluffytailclinic.models.User;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,4 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT * FROM users WHERE user_phone = :phone", nativeQuery = true)
     Optional<User> findByPhone(@Param("phone") String phone);
+
+    @Query(value = "SELECT * FROM users WHERE role_id = :role", nativeQuery = true)
+    List<User> findByRole(@Param("role") Integer role);
 }

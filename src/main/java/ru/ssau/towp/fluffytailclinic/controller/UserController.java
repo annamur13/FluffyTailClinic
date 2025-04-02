@@ -46,6 +46,11 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/vets")
+    public ResponseEntity<List<User>> getAllVets() {
+        return userService.getAllVets();
+    }
+
 
     // Получить пользователя по ID
     @GetMapping("/{id}")

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.ssau.towp.fluffytailclinic.controller.NF.ResourceNotFoundException;
 import ru.ssau.towp.fluffytailclinic.dto.AnimalDTO;
 import ru.ssau.towp.fluffytailclinic.models.Animal;
@@ -27,6 +28,11 @@ public class AnimalService {
     public AnimalService(AnimalRepository animalRepository, UserRepository userRepository) {
         this.animalRepository = animalRepository;
         this.userRepository = userRepository;
+    }
+
+    public ResponseEntity<List<Animal>> getUserPets(@RequestParam Long userId) {
+        List<Animal> pets = animalRepository.findByOwnerId(userId);
+        return ResponseEntity.ok(pets);
     }
 
     public List<AnimalDTO> getAllAnimals() {

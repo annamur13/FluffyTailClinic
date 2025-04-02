@@ -34,6 +34,11 @@ public class UserService {
         return ResponseEntity.ok(users);
     }
 
+    public ResponseEntity<List<User>> getAllVets() {
+        List<User> vets = userRepository.findByRole(0);
+        return ResponseEntity.ok(vets);
+    }
+
     // Получить пользователя по ID
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         User user = userRepository.findById(id)

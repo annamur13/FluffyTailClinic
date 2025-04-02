@@ -1,6 +1,7 @@
 package ru.ssau.towp.fluffytailclinic.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,6 +46,14 @@ public class AuthController {
     public String registerPage(){
         return "register.html";
     }
+
+
+    @GetMapping("/add-pet")
+    public String addPetPage(){return "addPet.html";}
+
+
+    @GetMapping("/add-appointment")
+    public String addAppointmentPage(){return "addAppointment.html";}
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestParam String username,
