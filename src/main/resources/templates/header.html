@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<header th:fragment="header(activePage)">
+  <nav>
+    <a th:href="@{/dashboard}"
+       th:classappend="${activePage == 'dashboard'} ? 'active'">Главная</a>
+    <a th:href="@{/animals}"
+       th:classappend="${activePage == 'animals'} ? 'active'">Питомцы</a>
+    <a th:href="@{/appointments}"
+       th:classappend="${activePage == 'appointments'} ? 'active'">Записи</a>
+    <a th:href="@{/logout}" class="logout">Выйти</a>
+  </nav>
+</header>
+</body>
+</html>
