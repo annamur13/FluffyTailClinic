@@ -1,121 +1,125 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/styles.css">
     <title>Запись на приём</title>
+    <script>
+        async function loadDropdowns() {
+            let token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "/login";
+                return;
+            }
+
+            // Получаем ID пользователя
+            let userResponse = await fetch("/me", {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            if (!userResponse.ok) {
+                console.error("Ошибка получения пользователя");
+                return;
+            }
+
+            let userData = await userResponse.json();
+            let userId = userData.id;
+
+            // Загружаем питомцев пользователя
+            let petResponse = await fetch(`/api/animals/mine?userId=${userId}`, {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            if (petResponse.ok) {
+                let pets = await petResponse.json();
+                let petList = document.getElementById("pet-select");
+
+                pets.forEach(pet => {
+                    let option = document.createElement("option");
+                    option.value = pet.id;
+                    option.textContent = `${pet.name} (${pet.type})`;
+                    petList.appendChild(option);
+                });
+            } else {
+                document.getElementById("status-message").innerText = "Ошибка загрузки питомцев!";
+            }
+
+            // Загружаем список ветеринаров
+            let vetResponse = await fetch("/api/users/vets", {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            let vetSelect = document.getElementById("vet-select");
+            if (vetResponse.ok) {
+                let vets = await vetResponse.json();
+                vets.forEach(vet => {
+                    let option = document.createElement("option");
+                    option.value = vet.id;
+                    option.textContent = vet.name;
+                    vetSelect.appendChild(option);
+                });
+            } else {
+                document.getElementById("status-message").innerText = "Ошибка загрузки ветеринаров!";
+            }
+        }
+
+        async function addAppointment(event) {
+            event.preventDefault();
+
+            let token = localStorage.getItem("token");
+
+            let response = await fetch("/api/appointments", {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    animalId: document.getElementById("pet-select").value,
+                    vetId: document.getElementById("vet-select").value,
+                    date: document.getElementById("appointment-date").value + ":00", // Добавляем секунды для формата
+                    description: document.getElementById("description").value
+                })
+            });
+
+            let message = document.getElementById("status-message");
+            if (response.ok) {
+                message.innerText = "Приём успешно добавлен!";
+            } else {
+                message.innerText = "Ошибка при записи на приём!";
+            }
+        }
+
+        document.getElementById("add-appointment-form").addEventListener("submit", addAppointment);
+        window.onload = loadDropdowns;
+    </script>
 </head>
 <body>
-<h2>Запись на приём</h2>
+<div th:replace="~{header :: header('appointments')}"></div>
 
-<form id="add-appointment-form">
-    <label>Выберите питомца:</label>
-    <select id="pet-select" required></select>
+<main>
+    <h2>Запись на приём</h2>
 
-    <label>Выберите ветеринара:</label>
-    <select id="vet-select" required></select>
+    <form id="add-appointment-form">
+        <label>Выберите питомца:</label>
+        <select id="pet-select" required></select>
 
-    <label>Дата и время:</label>
-    <input type="datetime-local" id="appointment-date" required>
+        <label>Выберите ветеринара:</label>
+        <select id="vet-select" required></select>
 
-    <label>Описание:</label>
-    <input type="text" id="description" required>
+        <label>Дата и время:</label>
+        <input type="datetime-local" id="appointment-date" required>
 
-    <button type="submit">Записаться</button>
-</form>
+        <label>Описание:</label>
+        <input type="text" id="description" required>
 
-<p id="status-message"></p>
-<button onclick="window.location.href='/dashboard'">Назад</button>
+        <button type="submit">Записаться</button>
+    </form>
 
-<script>
-    async function loadDropdowns() {
-        let token = localStorage.getItem("token");
-        if (!token) {
-            window.location.href = "/login";
-            return;
-        }
+    <p id="status-message"></p>
+    <button onclick="window.location.href='/dashboard'">Назад</button>
+</main>
 
-        // Получаем ID пользователя
-        let userResponse = await fetch("/me", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-
-        if (!userResponse.ok) {
-            console.error("Ошибка получения пользователя");
-            return;
-        }
-
-        let userData = await userResponse.json();
-        let userId = userData.id;
-
-        // Загружаем питомцев пользователя
-        let petResponse = await fetch(`/api/animals/mine?userId=${userId}`, {
-            headers: { "Authorization": "Bearer " + token }
-        });
-
-        if (petResponse.ok) {
-            let pets = await petResponse.json();
-            let petList = document.getElementById("pet-select");
-
-            pets.forEach(pet => {
-                let option = document.createElement("option");
-                option.value = pet.id;
-                option.textContent = `${pet.name} (${pet.type})`;
-                petList.appendChild(option);
-            });
-        } else {
-            document.getElementById("status-message").innerText = "Ошибка загрузки питомцев!";
-        }
-
-
-        // Загружаем список ветеринаров
-        let vetResponse = await fetch("/api/users/vets", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-
-        let vetSelect = document.getElementById("vet-select");
-        if (vetResponse.ok) {
-            let vets = await vetResponse.json();
-            vets.forEach(vet => {
-                let option = document.createElement("option");
-                option.value = vet.id;
-                option.textContent = vet.name;
-                vetSelect.appendChild(option);
-            });
-        } else {
-            document.getElementById("status-message").innerText = "Ошибка загрузки ветеринаров!";
-        }
-    }
-
-    async function addAppointment(event) {
-        event.preventDefault();
-
-        let token = localStorage.getItem("token");
-
-        let response = await fetch("/api/appointments", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                animalId: document.getElementById("pet-select").value,
-                vetId: document.getElementById("vet-select").value,
-                date: document.getElementById("appointment-date").value + ":00", // Добавляем секунды для формата
-                description: document.getElementById("description").value
-            })
-        });
-
-        let message = document.getElementById("status-message");
-        if (response.ok) {
-            message.innerText = "Приём успешно добавлен!";
-        } else {
-            message.innerText = "Ошибка при записи на приём!";
-        }
-    }
-
-    document.getElementById("add-appointment-form").addEventListener("submit", addAppointment);
-    window.onload = loadDropdowns;
-</script>
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

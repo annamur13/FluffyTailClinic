@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/styles.css">
@@ -93,16 +93,22 @@
     </script>
 </head>
 <body>
-<h2>Управление животными</h2>
+<div th:replace="~{header :: header('animals')}"></div>
 
-<h3>Добавить животное</h3>
-<input type="text" id="pet-name" placeholder="Имя животного" required>
-<input type="text" id="pet-type" placeholder="Тип (кот, собака и т. д.)" required>
-<button onclick="addPet()">Добавить</button>
+<main>
+    <h2>Управление животными</h2>
 
-<h3>Ваши животные</h3>
-<ul id="pets-list"></ul>
-<p id="status-message"></p>
-<a href="/dashboard"><button>Назад</button></a>
+    <h3>Добавить животное</h3>
+    <input type="text" id="pet-name" placeholder="Имя животного" required>
+    <input type="text" id="pet-type" placeholder="Тип (кот, собака и т. д.)" required>
+    <button onclick="addPet()">Добавить</button>
+
+    <h3>Ваши животные</h3>
+    <ul id="pets-list"></ul>
+    <p id="status-message"></p>
+    <a href="/dashboard"><button>Назад</button></a>
+</main>
+
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>
