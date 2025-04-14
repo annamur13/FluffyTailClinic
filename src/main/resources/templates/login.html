@@ -9,12 +9,15 @@
 
 <h2>Вход</h2>
 
-<form id="login-form">
+<form id="login-form" method="post" th:action="@{/login}">
     <label for="email">Email:</label>
     <input type="text" id="email" name="email" required>
 
     <label for="password">Пароль:</label>
     <input type="text" id="password" name="password" required>
+
+    <!-- CSRF-токен -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
     <button type="submit">Войти</button>
 </form>
@@ -23,40 +26,40 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Проверяем, есть ли токен, если есть, перекидываем на dashboard
         const token = localStorage.getItem("token");
         if (token) {
             fetch("/me", {
                 headers: { "Authorization": "Bearer " + token }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = "/dashboard";
-                    }
-                })
-                .catch(() => {});
+            }).then(response => {
+                if (response.ok) window.location.href = "/dashboard";
+            }).catch(() => {});
         }
 
-        // Обработка формы логина
         document.getElementById("login-form").addEventListener("submit", async function (event) {
             event.preventDefault();
 
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
+            const form = event.target;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const csrfToken = form.querySelector("input[name='_csrf']").value;
 
             let response = await fetch("/login", {
                 method: "POST",
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                body: new URLSearchParams({email, password})
-            });
-
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    email,
+                    password,
+                    _csrf: csrfToken
+                })
+            })
             let result = await response.json();
-            console.log("Ответ сервера:", result); // ЛОГ В КОНСОЛЬ ДЛЯ ОТЛАДКИ
+            console.log("Ответ сервера:", result);
 
             if (response.ok && result.token) {
-                localStorage.setItem("token", result.token); // Сохраняем JWT
-                console.log("Токен сохранён, редиректим...");
-                window.location.href = "/dashboard"; // Переход на профиль
+                localStorage.setItem("token", result.token);
+                window.location.href = "/dashboard";
             } else {
                 document.getElementById("error-message").innerText = result.error || "Ошибка входа";
             }

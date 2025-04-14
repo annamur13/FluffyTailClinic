@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.ssau.towp.fluffytailclinic.dto.AppointmentDTO;
 import ru.ssau.towp.fluffytailclinic.dto.UserDTO;
 import ru.ssau.towp.fluffytailclinic.models.User;
+import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
 import ru.ssau.towp.fluffytailclinic.repository.AppointmentRepository;
 import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
 
@@ -24,6 +25,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     private AppointmentRepository appointmentRepository;
+
+    public UserService(AppointmentRepository appointmentRepository, AnimalRepository animalRepository, UserRepository userRepository) {
+        this.appointmentRepository = appointmentRepository;
+    }
 
     // Получить всех пользователей
     public ResponseEntity<List<UserDTO>> getAllUsers() {

@@ -45,7 +45,20 @@
     }
     async function loadPets() {
         let token = localStorage.getItem("token");
-        let response = await fetch("/api/animals", {
+        // Получаем ID пользователя
+        let userResponse = await fetch("/me", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (!userResponse.ok) {
+            console.error("Ошибка получения пользователя!");
+            return;
+        }
+
+        let userData = await userResponse.json();
+        let userId = userData.id;
+
+        let response = await fetch(`/api/animals/mine?userId=${userId}`, {
             headers: { "Authorization": "Bearer " + token }
         });
 
@@ -73,6 +86,7 @@
         }
 
         let user = await userResponse.json(); // Получаем информацию о пользователе
+
 
         let response = await fetch("/api/animals", {
             method: "POST",

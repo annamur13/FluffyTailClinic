@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ssau.towp.fluffytailclinic.models.User;
+import ru.ssau.towp.fluffytailclinic.repository.AnimalRepository;
+import ru.ssau.towp.fluffytailclinic.repository.AppointmentRepository;
 import ru.ssau.towp.fluffytailclinic.repository.UserRepository;
 import ru.ssau.towp.fluffytailclinic.services.UserService;
 
@@ -15,6 +17,10 @@ public class UserServiceImpl extends UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(AppointmentRepository appointmentRepository, AnimalRepository animalRepository, UserRepository userRepository) {
+        super(appointmentRepository, animalRepository, userRepository);
+    }
 
     @Override
     public boolean addUser(User user) {

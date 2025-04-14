@@ -32,6 +32,8 @@ public class AppointmentService {
         this.userRepository = userRepository;
     }
 
+
+
     public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
         List<AppointmentDTO> appointments = appointmentRepository.findAll()
                 .stream()

@@ -9,7 +9,7 @@
 
 <h2>Регистрация</h2>
 
-<form id="register-form">
+<form id="register-form" th:action="@{/register}" method="post">
   <label for="username">Имя пользователя:</label>
   <input type="text" id="username" name="username" required>
 
@@ -19,6 +19,9 @@
   <label for="password">Пароль:</label>
   <input type="text" id="password" name="password" required>
 
+  <!-- CSRF-токен -->
+  <input type="hidden" id="csrf-parameter-name" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
   <button type="submit">Зарегистрироваться</button>
 </form>
 
@@ -26,7 +29,6 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Проверяем, есть ли токен
     const token = localStorage.getItem("token");
     if (token) {
       fetch("/me", {
@@ -34,24 +36,28 @@
       })
               .then(response => {
                 if (response.ok) {
-                  window.location.href = "/dashboard"; // Если токен валиден, переходим в кабинет
+                  window.location.href = "/dashboard";
                 }
               })
               .catch(() => {});
     }
 
-    // Обработка формы регистрации
     document.getElementById("register-form").addEventListener("submit", function (event) {
       event.preventDefault();
 
+      const csrfToken = document.querySelector('input[name="_csrf"]').value;
       const formData = new FormData(this);
+
       fetch("/register", {
         method: "POST",
+        headers: {
+          'X-CSRF-TOKEN': csrfToken
+        },
         body: formData
       })
               .then(response => {
                 if (response.ok) {
-                  window.location.href = "/dashboard"; // После успешной регистрации переходим на /dashboard
+                  window.location.href = "/dashboard";
                 } else {
                   alert("Ошибка регистрации!");
                 }

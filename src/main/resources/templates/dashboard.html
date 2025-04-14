@@ -2,6 +2,9 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-header" data-th-content="${_csrf.headerName}">
+    <meta name="csrf-parameter" data-th-content="${_csrf.parameterName}">
+    <meta name="csrf-token" data-th-content="${_csrf.token}">
     <link rel="stylesheet" href="/css/styles.css">
     <title>Личный кабинет</title>
     <script>
@@ -31,7 +34,19 @@
 
         async function loadPets() {
             let token = localStorage.getItem("token");
-            let response = await fetch("/api/animals", {
+            // Получаем ID пользователя
+            let userResponse = await fetch("/me", {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            if (!userResponse.ok) {
+                console.error("Ошибка получения пользователя!");
+                return;
+            }
+
+            let userData = await userResponse.json();
+            let userId = userData.id;
+            let response = await fetch(`/api/animals/mine?userId=${userId}`, {
                 headers: { "Authorization": "Bearer " + token }
             });
 
@@ -49,16 +64,44 @@
 
         async function deletePet(petId) {
             let token = localStorage.getItem("token");
+
+            //const csrfToken = document.cookie
+            //    .split("; ")
+            //    .find((row) => row.startsWith("XSRF-TOKEN="))
+            //    ?.split("=")[1];
+
+
+            const csrfHeader = document.querySelector("meta[name='csrf-header']").content;
+            const csrfToken = document.querySelector("meta[name='csrf-token']").content;
+
+            console.log(csrfHeader)
+            console.log(csrfToken)
+
             await fetch(`/api/animals/${petId}`, {
                 method: "DELETE",
-                headers: { "Authorization": "Bearer " + token }
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    csrfHeader: csrfToken
+                }
             });
-            loadPets();
+            window.local.href("/dashboard")
         }
+
 
         async function loadAppointments() {
             let token = localStorage.getItem("token");
-            let response = await fetch("/api/appointments", {
+            let userResponse = await fetch("/me", {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            if (!userResponse.ok) {
+                console.error("Ошибка получения пользователя!");
+                return;
+            }
+
+            let userData = await userResponse.json();
+            let userId = userData.id;
+            let response = await fetch(`/api/users/appointment/${userId}`, {
                 headers: { "Authorization": "Bearer " + token }
             });
 
@@ -76,12 +119,16 @@
 
         async function deleteAppointment(appId) {
             let token = localStorage.getItem("token");
+
             await fetch(`/api/appointments/${appId}`, {
                 method: "DELETE",
-                headers: { "Authorization": "Bearer " + token }
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
             });
             loadAppointments();
         }
+
 
         function logout() {
             localStorage.removeItem("token");
@@ -110,9 +157,13 @@
 
 
 
+
+
+
     <button onclick="logout()">Выйти</button>
 </main>
 
 <footer th:replace="~{footer :: footer}"></footer>
+<input type="hidden" id="csrf-token" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 </body>
 </html>

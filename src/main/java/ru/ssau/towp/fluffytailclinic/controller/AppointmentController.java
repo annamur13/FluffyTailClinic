@@ -34,6 +34,7 @@ public class AppointmentController {
         return appointmentService.getAllAppointments();
     }
 
+
     // Получить приём по ID
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDTO> getAppointmentById(@PathVariable Long id) {

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import ru.ssau.towp.fluffytailclinic.models.Animal;
 import ru.ssau.towp.fluffytailclinic.models.Appointment;
 import ru.ssau.towp.fluffytailclinic.models.User;
 
@@ -29,4 +30,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     //Поиск по владельцу
     @Query("SELECT a FROM Appointment a WHERE a.animal.owner = :user")
     List<Appointment> findByAnimalOwner(@Param("user") User user);
+
+
 }
