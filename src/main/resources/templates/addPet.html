@@ -4,93 +4,6 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/styles.css">
     <title>Добавить животное</title>
-    <script>
-        async function loadUserInfo() {
-            let token = localStorage.getItem("token");
-            if (!token) {
-                window.location.href = "/login";
-                return;
-            }
-
-            let response = await fetch("/me", {
-                headers: { "Authorization": "Bearer " + token }
-            });
-
-            let result = await response.json();
-
-            if (response.ok) {
-                loadPets();
-                loadAppointments();
-            } else {
-                document.getElementById("error-message").innerText = result.error;
-            }
-        }
-        async function loadPets() {
-            let token = localStorage.getItem("token");
-            let response = await fetch("/api/animals", {
-                headers: { "Authorization": "Bearer " + token }
-            });
-
-            let petsList = document.getElementById("pets-list");
-            petsList.innerHTML = "";
-
-            let pets = await response.json();
-            pets.forEach(pet => {
-                let petItem = document.createElement("li");
-                petItem.innerHTML = `${pet.name} (${pet.type})
-                    <button onclick="deletePet(${pet.id})">Удалить</button>`;
-                petsList.appendChild(petItem);
-            });
-        }
-
-        async function addPet(event) {
-            let token = localStorage.getItem("token");
-            let userResponse = await fetch("/me", {
-                headers: { "Authorization": "Bearer " + token }
-            });
-
-            if (!userResponse.ok) {
-                document.getElementById("status-message").innerText = "Ошибка авторизации!";
-                return;
-            }
-
-            let user = await userResponse.json(); // Получаем информацию о пользователе
-
-            let response = await fetch("/api/animals", {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name: document.getElementById("pet-name").value,
-                    type: document.getElementById("pet-type").value,
-                    owner: {
-                        id: user.id  // Подставляем ID текущего пользователя
-                    }
-                })
-            });
-
-            let message = document.getElementById("status-message");
-            if (response.ok) {
-                message.innerText = "Питомец добавлен!";
-                loadPets();
-            } else {
-                message.innerText = "Ошибка при добавлении!";
-            }
-        }
-
-        async function deletePet(petId) {
-            let token = localStorage.getItem("token");
-            await fetch(`/api/animals/${petId}`, {
-                method: "DELETE",
-                headers: { "Authorization": "Bearer " + token }
-            });
-            loadPets();
-        }
-
-        window.onload = loadUserInfo();
-    </script>
 </head>
 <body>
 <div th:replace="~{header :: header('animals')}"></div>
@@ -110,5 +23,91 @@
 </main>
 
 <div th:replace="~{footer :: footer}"></div>
+<script>
+    async function loadUserInfo() {
+        let token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "/login";
+            return;
+        }
+
+        let response = await fetch("/me", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        let result = await response.json();
+
+        if (response.ok) {
+            loadPets();
+        } else {
+            document.getElementById("error-message").innerText = result.error;
+        }
+    }
+    async function loadPets() {
+        let token = localStorage.getItem("token");
+        let response = await fetch("/api/animals", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        let petsList = document.getElementById("pets-list");
+        petsList.innerHTML = "";
+
+        let pets = await response.json();
+        pets.forEach(pet => {
+            let petItem = document.createElement("li");
+            petItem.innerHTML = `${pet.name} (${pet.type})
+                    <button onclick="deletePet(${pet.id})">Удалить</button>`;
+            petsList.appendChild(petItem);
+        });
+    }
+
+    async function addPet(event) {
+        let token = localStorage.getItem("token");
+        let userResponse = await fetch("/me", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (!userResponse.ok) {
+            document.getElementById("status-message").innerText = "Ошибка авторизации!";
+            return;
+        }
+
+        let user = await userResponse.json(); // Получаем информацию о пользователе
+
+        let response = await fetch("/api/animals", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: document.getElementById("pet-name").value,
+                type: document.getElementById("pet-type").value,
+                owner: {
+                    id: user.id  // Подставляем ID текущего пользователя
+                }
+            })
+        });
+
+        let message = document.getElementById("status-message");
+        if (response.ok) {
+            message.innerText = "Питомец добавлен!";
+            loadPets();
+        } else {
+            message.innerText = "Ошибка при добавлении!";
+        }
+    }
+
+    async function deletePet(petId) {
+        let token = localStorage.getItem("token");
+        await fetch(`/api/animals/${petId}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
+        loadPets();
+    }
+
+    window.onload = loadUserInfo();
+</script>
 </body>
 </html>

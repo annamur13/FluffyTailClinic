@@ -222,12 +222,12 @@ footer p {
     font-size: 1rem;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Тень для лучшей читаемости */
-     display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100px; /* Минимальная высота */
-        box-sizing: border-box;
-        width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px; /* Минимальная высота */
+    box-sizing: border-box;
+    width: 100%;
 }
 
 /* Улучшенная анимация для footer */
@@ -236,9 +236,9 @@ footer::before {
     display: block;
     height: 4px;
     background: linear-gradient(90deg,
-        #3498db 0%,
-        #f1c40f 50%,
-        #e74c3c 100%);
+    #3498db 0%,
+    #f1c40f 50%,
+    #e74c3c 100%);
     margin-bottom: 1.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
