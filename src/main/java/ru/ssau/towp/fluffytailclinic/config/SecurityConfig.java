@@ -51,9 +51,9 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                       // .ignoringRequestMatchers(
-                        //                new AntPathRequestMatcher("/api/**")
-                        //)
+                        .ignoringRequestMatchers(
+                                        new AntPathRequestMatcher("/api/**")
+                        )
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth

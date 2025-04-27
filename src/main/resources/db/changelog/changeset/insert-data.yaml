@@ -142,3 +142,10 @@ databaseChangeLog:
               - column:
                   name: diagnosis_id
                   type: NUMERIC
+  - changeSet:
+      id: fix-user-sequence
+      author: aniam
+      changes:
+        - sql:
+            sql: |
+              SELECT setval('users_user_id_seq', (SELECT MAX(user_id) FROM users) + 1);

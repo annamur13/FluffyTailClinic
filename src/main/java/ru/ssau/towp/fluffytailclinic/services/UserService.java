@@ -55,10 +55,21 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        List<AppointmentDTO> appointments = appointmentRepository.findByAnimalOwner(user)
-                .stream()
-                .map(AppointmentDTO::new)
-                .collect(Collectors.toList());
+        List<AppointmentDTO> appointments;
+
+        if ("Ветеринар".equals(user.getRole().getName())) {
+            // Ветеринар — видит все приёмы
+            appointments = appointmentRepository.findAll()
+                    .stream()
+                    .map(AppointmentDTO::new)
+                    .collect(Collectors.toList());
+        } else {
+            // Владелец — видит только свои приёмы
+            appointments = appointmentRepository.findByAnimalOwner(user)
+                    .stream()
+                    .map(AppointmentDTO::new)
+                    .collect(Collectors.toList());
+        }
 
         return ResponseEntity.ok(appointments);
     }

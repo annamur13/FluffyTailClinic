@@ -1,8 +1,10 @@
 package ru.ssau.towp.fluffytailclinic.services;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,9 +32,17 @@ public class AnimalService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<List<Animal>> getUserPets(@RequestParam Long userId) {
-        List<Animal> pets = animalRepository.findByOwnerId(userId);
-        return ResponseEntity.ok(pets);
+    public ResponseEntity<List<Animal>> getUserPets(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        System.out.println(user.getRole().getName());
+
+        if (user.getRole().getName().equals("Ветеринар")) {
+            return ResponseEntity.ok(animalRepository.findAll());
+        } else {
+            return ResponseEntity.ok(animalRepository.findByOwnerId(user.getId()));
+        }
     }
 
     public List<AnimalDTO> getAllAnimals() {
