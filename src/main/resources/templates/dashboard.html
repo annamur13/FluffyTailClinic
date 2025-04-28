@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="csrf-header" data-th-content="${_csrf.headerName}">
-    <meta name="csrf-parameter" data-th-content="${_csrf.parameterName}">
-    <meta name="csrf-token" data-th-content="${_csrf.token}">
     <link rel="stylesheet" href="/css/styles.css">
     <title>Личный кабинет</title>
     <script>
+
         async function loadUserInfo() {
             let token = localStorage.getItem("token");
             if (!token) {
@@ -34,19 +32,7 @@
 
         async function loadPets() {
             let token = localStorage.getItem("token");
-            // Получаем ID пользователя
-            let userResponse = await fetch("/me", {
-                headers: { "Authorization": "Bearer " + token }
-            });
-
-            if (!userResponse.ok) {
-                console.error("Ошибка получения пользователя!");
-                return;
-            }
-
-            let userData = await userResponse.json();
-            let userId = userData.id;
-            let response = await fetch(`/api/animals/mine?userId=${userId}`, {
+            let response = await fetch("/api/animals", {
                 headers: { "Authorization": "Bearer " + token }
             });
 
@@ -64,44 +50,16 @@
 
         async function deletePet(petId) {
             let token = localStorage.getItem("token");
-
-            //const csrfToken = document.cookie
-            //    .split("; ")
-            //    .find((row) => row.startsWith("XSRF-TOKEN="))
-            //    ?.split("=")[1];
-
-
-            const csrfHeader = document.querySelector("meta[name='csrf-header']").content;
-            const csrfToken = document.querySelector("meta[name='csrf-token']").content;
-
-            console.log(csrfHeader)
-            console.log(csrfToken)
-
             await fetch(`/api/animals/${petId}`, {
                 method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    csrfHeader: csrfToken
-                }
+                headers: { "Authorization": "Bearer " + token }
             });
-            window.local.href("/dashboard")
+            loadPets();
         }
-
 
         async function loadAppointments() {
             let token = localStorage.getItem("token");
-            let userResponse = await fetch("/me", {
-                headers: { "Authorization": "Bearer " + token }
-            });
-
-            if (!userResponse.ok) {
-                console.error("Ошибка получения пользователя!");
-                return;
-            }
-
-            let userData = await userResponse.json();
-            let userId = userData.id;
-            let response = await fetch(`/api/users/appointment/${userId}`, {
+            let response = await fetch("/api/appointments", {
                 headers: { "Authorization": "Bearer " + token }
             });
 
@@ -119,16 +77,12 @@
 
         async function deleteAppointment(appId) {
             let token = localStorage.getItem("token");
-
             await fetch(`/api/appointments/${appId}`, {
                 method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
+                headers: { "Authorization": "Bearer " + token }
             });
             loadAppointments();
         }
-
 
         function logout() {
             localStorage.removeItem("token");
@@ -139,31 +93,21 @@
     </script>
 </head>
 <body>
-<header th:replace="~{header :: header('dashboard')}"></header>
+<h2>Личный кабинет</h2>
+<p><strong>Имя:</strong> <span id="user-name"></span></p>
+<p><strong>Email:</strong> <span id="user-email"></span></p>
+<p><strong>Роль:</strong> <span id="user-role"></span></p>
 
-<main>
-    <h2>Личный кабинет</h2>
-    <p><strong>Имя:</strong> <span id="user-name"></span></p>
-    <p><strong>Email:</strong> <span id="user-email"></span></p>
-    <p><strong>Роль:</strong> <span id="user-role"></span></p>
+<h3>Ваши животные</h3>
+<ul id="pets-list"></ul>
+<a href="/add-pet"><button>Добавить животное</button></a>
 
-    <h3>Ваши животные</h3>
-    <ul id="pets-list"></ul>
-    <a href="/add-pet"><button>Добавить животное</button></a>
+<h3>Ваши приёмы</h3>
+<ul id="appointments-list"></ul>
+<a href="/add-appointment"><button>Записаться на приём</button></a>
 
-    <h3>Ваши приёмы</h3>
-    <ul id="appointments-list"></ul>
-    <a href="/add-appointment"><button>Записаться на приём</button></a>
+<p id="error-message" style="color: red;"></p>
 
-
-
-
-
-
-    <button onclick="logout()">Выйти</button>
-</main>
-
-<footer th:replace="~{footer :: footer}"></footer>
-<input type="hidden" id="csrf-token" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<button onclick="logout()">Выйти</button>
 </body>
 </html>
