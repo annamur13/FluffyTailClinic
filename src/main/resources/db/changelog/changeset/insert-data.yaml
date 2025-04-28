@@ -149,3 +149,17 @@ databaseChangeLog:
         - sql:
             sql: |
               SELECT setval('users_user_id_seq', (SELECT MAX(user_id) FROM users) + 1);
+  - changeSet:
+      id: fix-animal-sequence
+      author: aniam
+      changes:
+        - sql:
+            sql: |
+              SELECT setval('animals_animal_id_seq', (SELECT MAX(animal_id) FROM animals) + 1);
+  - changeSet:
+      id: fix-appointment-sequence
+      author: aniam
+      changes:
+        - sql:
+            sql: |
+              SELECT setval('appointments_id_seq', (SELECT MAX(id) FROM appointments) + 1);
